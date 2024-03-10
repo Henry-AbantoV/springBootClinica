@@ -8,13 +8,22 @@ package edu.unc.clinica.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 //import org.springframework.hateoas.Link;
+=======
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.http.HttpHeaders;
+>>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,17 +40,24 @@ import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.dto.CitaDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
+import edu.unc.clinica.repositories.CitaRepository;
 import edu.unc.clinica.services.CitaService;
 import edu.unc.clinica.util.ApiResponse;
 
+<<<<<<< HEAD
 //import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+=======
+>>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 @RestController
 @RequestMapping(value ="api/citas", headers = "Api-Version=1")
 public class CitaController {
 
 	@Autowired
 	private CitaService citaS;
+	
+	@Autowired
+	private CitaRepository citaR;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -52,14 +68,14 @@ public class CitaController {
  	 * @return the response entity
  	 */
  	@GetMapping
-	    public ResponseEntity<?> obtenerTodasCitas() {
-	     
+	    public ResponseEntity<?> obtenerTodasCitas() {	     
 	            List<Cita> citas = citaS.listarCitas();
 	            if(citas==null || citas.isEmpty()) {
 	            	return ResponseEntity.noContent().build();
 	            }
-	            else {
+	            /*else {
 	            	List<CitaDTO> citaDto=citas.stream()
+<<<<<<< HEAD
 	            			.map(cita->modelMapper.map(cita, CitaDTO.class))
 	            			.collect(Collectors.toList());
 	            	ApiResponse<List<CitaDTO>> response=new ApiResponse<>(true, "Lista de citas",citaDto);
@@ -67,6 +83,27 @@ public class CitaController {
 	            	return ResponseEntity.ok(response);
 	            }   
 	    }
+=======
+	            			.map(cita -> {
+	                            CitaDTO citaDTO = modelMapper.map(cita, CitaDTO.class);	                            
+	                            return citaDTO;
+	                        })
+	                        .collect(Collectors.toList());
+
+	                HttpHeaders headers = new HttpHeaders();
+	                headers.add("Api-Version", "1");
+
+	                return ResponseEntity.ok().headers(headers).body(citaDto);
+	            } */
+	            for(Cita cita:citas) {
+	            	cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
+		            cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
+	            }
+	            CollectionModel<Cita> modelo = CollectionModel.of(citas);
+	           modelo.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withSelfRel());
+	            return new ResponseEntity<>(citas, HttpStatus.OK);
+ 	}
+>>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 	    
 	    /**
 	     * Maneja las solicitudes GET para obtener una factura por su ID.
@@ -76,6 +113,7 @@ public class CitaController {
 	     */
 	   
 	    @GetMapping("/{id}")
+<<<<<<< HEAD
 	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {
 	      
 	            Cita citas = citaS.buscarCitabyId(id);
@@ -91,6 +129,25 @@ public class CitaController {
 	    }
 	    
 	    /**
+=======
+	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {	      
+	            Cita cita = citaS.buscarCitabyId(id);	            
+	            CitaDTO citaDto=modelMapper.map(cita, CitaDTO.class);
+	            EntityModel<CitaDTO> resource = EntityModel.of(citaDto);
+	            cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
+	            //cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
+			    // Agregar mensajes para verificar la generación del enlace
+			    if (resource.hasLinks()) {
+			        System.out.println("Enlace generado correctamente para el cliente con ID: " + id);
+			    } else {
+			        System.out.println("Error al generar el enlace para el cliente con ID: " + id);
+			    }
+			    return new ResponseEntity<>(cita, HttpStatus.OK);
+			   // return ResponseEntity.ok(resource);
+	    }    
+
+		/**
+>>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 	     * Maneja las solicitudes POST para guardar una nueva factura.
 	     * @param facturaDto La factura a guardar.
 	     * @return ResponseEntity con la FacturaDTO guardada en caso de éxito o un mensaje de error si falla la operación.
@@ -161,6 +218,15 @@ public class CitaController {
 	            return ResponseEntity.ok(cita);   		
 	    
 	    }
+	    
+	    
+	    public Cita buscarCitabyId(Long IdCita) throws EntityNotFoundException  {
+			Optional<Cita> cita=citaR.findById(IdCita);
+			if(cita.isEmpty()) {
+				throw new EntityNotFoundException("La cita con el ID proporcionado no se encontró.");
+			}
+			return cita.get();
+			}
 	    
 	    /**
 	     * Valida los resultados de la validación y devuelve un ResponseEntity con los errores en caso de que haya alguno.

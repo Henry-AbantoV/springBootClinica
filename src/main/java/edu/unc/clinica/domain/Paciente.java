@@ -1,7 +1,7 @@
 /*
  * @file Paciente.java;
  * @Autor Daniela Torres (c)2024
- * @Created 4 mar 2024,23:51:53
+ * @Created 9 mar 2024,19:05:09
  */
 package edu.unc.clinica.domain;
 
@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
-
+import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -32,7 +31,7 @@ import lombok.Data;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "idPaciente")
-public class Paciente {
+public class Paciente extends RepresentationModel<Paciente>{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
