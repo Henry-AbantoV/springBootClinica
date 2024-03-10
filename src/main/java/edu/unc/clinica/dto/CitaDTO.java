@@ -30,7 +30,7 @@ import lombok.Data;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "idCita")
-public class CitaDTO extends  RepresentationModel<CitaDTO>{
+public class CitaDTO {
 	 
  	// Campo para almacenar el identificador único de la cita
 	 @Id

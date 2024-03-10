@@ -7,7 +7,6 @@ package edu.unc.clinica.domain;
 
 import java.util.Date;
 
-import org.springframework.hateoas.RepresentationModel;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +24,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class Cita extends  RepresentationModel<Cita>{
+public class Cita{
 	
 	// Identificador único de la cita.
     @Id

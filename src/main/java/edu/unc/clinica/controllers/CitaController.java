@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
+//import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,7 +34,7 @@ import edu.unc.clinica.exceptions.IllegalOperationException;
 import edu.unc.clinica.services.CitaService;
 import edu.unc.clinica.util.ApiResponse;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+//import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value ="api/citas", headers = "Api-Version=1")
@@ -63,6 +63,7 @@ public class CitaController {
 	            			.map(cita->modelMapper.map(cita, CitaDTO.class))
 	            			.collect(Collectors.toList());
 	            	ApiResponse<List<CitaDTO>> response=new ApiResponse<>(true, "Lista de citas",citaDto);
+	            	
 	            	return ResponseEntity.ok(response);
 	            }   
 	    }
@@ -82,11 +83,13 @@ public class CitaController {
 	            CitaDTO citaDto=modelMapper.map(citas, CitaDTO.class);
 	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Lista de facturas",citaDto);
 	            
-	            Link link=linkTo(CitaController.class).slash(citas.getIdCita()).withSelfRel();
-	            citas.add(link);
+	           /* Link link=linkTo(CitaController.class).slash(citas.getIdCita()).withSelfRel();
+	            citas.add(link);*/
+	            
 	            return ResponseEntity.ok(response);
 	            
 	    }
+	    
 	    /**
 	     * Maneja las solicitudes POST para guardar una nueva factura.
 	     * @param facturaDto La factura a guardar.
@@ -95,7 +98,7 @@ public class CitaController {
 	     */
 	 
 	    @PostMapping
-	    public ResponseEntity<?> guardarCita(@Valid @RequestBody CitaDTO citaDto, BindingResult result) throws IllegalOperationException  {
+	    public ResponseEntity<?> guardarCita(@RequestBody @Valid CitaDTO citaDto, BindingResult result) throws IllegalOperationException  {
 	        //citadto clase 
 	    	if(result.hasErrors()) {
 				return validar(result);
@@ -106,8 +109,6 @@ public class CitaController {
 	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Cita guardada", saveCitaDto);
 	             
 	           return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	    	
-	    	//return ResponseEntity.status(HttpStatus.CREATED).body(citaS.grabarCita(citaDto));
 	    }
 	    
 	    /**

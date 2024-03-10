@@ -22,6 +22,7 @@ import lombok.Data;
 @Entity
 //Anotación de Lombok que agrega automáticamente los métodos getter, setter, equals, hashCode y toString
 @Data
+
 public class Especialidad {
 
 
