@@ -14,12 +14,14 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -58,20 +60,22 @@ public class CitaController {
  	 *
  	 * @return the response entity
  	 */
- 	@GetMapping
-	    public ResponseEntity<?> obtenerTodasCitas() {	     
-	            List<Cita> citas = citaS.listarCitas();
-	            if(citas==null || citas.isEmpty()) {
-	            	return ResponseEntity.noContent().build();
-	            }	            
-	            for(Cita cita:citas) {
-	            	cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
-		            cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
-	            }
-	            CollectionModel<Cita> modelo = CollectionModel.of(citas);
-	           modelo.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withSelfRel());
-	            return new ResponseEntity<>(citas, HttpStatus.OK);
- 	}
+	@GetMapping
+    public ResponseEntity<?> obtenerTodasCitas() {	     
+            List<Cita> citas = citaS.listarCitas();
+            if(citas==null || citas.isEmpty()) {
+            	return ResponseEntity.noContent().build();
+            }
+            
+            for(Cita cita:citas) {
+            	
+            	cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
+	            cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
+            }
+            CollectionModel<Cita> modelo = CollectionModel.of(citas);
+           modelo.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withSelfRel());
+            return new ResponseEntity<>(citas, HttpStatus.OK);
+	}
 	    
 	    /**
 	     * Maneja las solicitudes GET para obtener una factura por su ID.
@@ -81,23 +85,22 @@ public class CitaController {
 	     */
 	   
 	    @GetMapping("/{id}")
-	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {	      
-	            Cita cita = citaS.buscarCitabyId(id);	            
-	            CitaDTO citaDto=modelMapper.map(cita, CitaDTO.class);
-	            EntityModel<CitaDTO> resource = EntityModel.of(citaDto);
-	            cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
-	            //cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
-			    // Agregar mensajes para verificar la generación del enlace
-			    if (resource.hasLinks()) {
-			        System.out.println("Enlace generado correctamente para el cliente con ID: " + id);
-			    } else {
-			        System.out.println("Error al generar el enlace para el cliente con ID: " + id);
-			    }
-			    return new ResponseEntity<>(cita, HttpStatus.OK);
-			   // return ResponseEntity.ok(resource);
-	    }    
 
-		/**
+	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {
+	      
+	            Cita citas = citaS.buscarCitabyId(id);
+	            
+	            CitaDTO citaDto=modelMapper.map(citas, CitaDTO.class);
+	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Lista de facturas",citaDto);
+	            
+	           /* Link link=linkTo(CitaController.class).slash(citas.getIdCita()).withSelfRel();
+	            citas.add(link);*/
+	            
+	            return ResponseEntity.ok(response);
+	            
+	    }
+	    
+	    /**
 	     * Maneja las solicitudes POST para guardar una nueva factura.
 	     * @param facturaDto La factura a guardar.
 	     * @return ResponseEntity con la FacturaDTO guardada en caso de éxito o un mensaje de error si falla la operación.
@@ -105,7 +108,7 @@ public class CitaController {
 	     */
 	 
 	    @PostMapping
-	    public ResponseEntity<?> guardarCita(@Valid @RequestBody CitaDTO citaDto, BindingResult result) throws IllegalOperationException  {
+	    public ResponseEntity<?> guardarCita(@RequestBody @Valid CitaDTO citaDto, BindingResult result) throws IllegalOperationException  {
 	        //citadto clase 
 	    	if(result.hasErrors()) {
 				return validar(result);
@@ -116,8 +119,6 @@ public class CitaController {
 	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Cita guardada", saveCitaDto);
 	             
 	           return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	    	
-	    	//return ResponseEntity.status(HttpStatus.CREATED).body(citaS.grabarCita(citaDto));
 	    }
 	    
 	    /**

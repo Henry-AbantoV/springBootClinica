@@ -2,7 +2,6 @@
 /*
 * @Autor Fernando C.J. (c)2024
  * @Created 5 mar. 2024,00:39:05
->>>>>>> 5a45278ea137551ce211d440fce8777cd3988110
  */
 
 package edu.unc.clinica.domain;

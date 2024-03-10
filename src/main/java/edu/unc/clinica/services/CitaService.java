@@ -66,4 +66,6 @@ public interface CitaService {
      * @throws IllegalOperationException Si la operación no es válida.
      */
 	Cita asignarFactura(Long IdCita, Long IdFactura) throws EntityNotFoundException, IllegalOperationException;
+	
+	
 }

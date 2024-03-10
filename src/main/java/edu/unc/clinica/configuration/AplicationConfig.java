@@ -62,6 +62,4 @@ public class AplicationConfig {
 	 public ModelMapper modelMapper() {
 		 return new ModelMapper();
 	 }
- 	
-
 }
