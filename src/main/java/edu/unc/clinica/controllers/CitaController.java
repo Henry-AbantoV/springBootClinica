@@ -14,16 +14,12 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
-//import org.springframework.hateoas.Link;
-=======
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.http.HttpHeaders;
->>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -44,11 +40,6 @@ import edu.unc.clinica.repositories.CitaRepository;
 import edu.unc.clinica.services.CitaService;
 import edu.unc.clinica.util.ApiResponse;
 
-<<<<<<< HEAD
-//import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
-=======
->>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 @RestController
 @RequestMapping(value ="api/citas", headers = "Api-Version=1")
 public class CitaController {
@@ -67,43 +58,6 @@ public class CitaController {
  	 *
  	 * @return the response entity
  	 */
- 	@GetMapping
-	    public ResponseEntity<?> obtenerTodasCitas() {	     
-	            List<Cita> citas = citaS.listarCitas();
-	            if(citas==null || citas.isEmpty()) {
-	            	return ResponseEntity.noContent().build();
-	            }
-	            /*else {
-	            	List<CitaDTO> citaDto=citas.stream()
-<<<<<<< HEAD
-	            			.map(cita->modelMapper.map(cita, CitaDTO.class))
-	            			.collect(Collectors.toList());
-	            	ApiResponse<List<CitaDTO>> response=new ApiResponse<>(true, "Lista de citas",citaDto);
-	            	
-	            	return ResponseEntity.ok(response);
-	            }   
-	    }
-=======
-	            			.map(cita -> {
-	                            CitaDTO citaDTO = modelMapper.map(cita, CitaDTO.class);	                            
-	                            return citaDTO;
-	                        })
-	                        .collect(Collectors.toList());
-
-	                HttpHeaders headers = new HttpHeaders();
-	                headers.add("Api-Version", "1");
-
-	                return ResponseEntity.ok().headers(headers).body(citaDto);
-	            } */
-	            for(Cita cita:citas) {
-	            	cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
-		            cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));
-	            }
-	            CollectionModel<Cita> modelo = CollectionModel.of(citas);
-	           modelo.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withSelfRel());
-	            return new ResponseEntity<>(citas, HttpStatus.OK);
- 	}
->>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 	    
 	    /**
 	     * Maneja las solicitudes GET para obtener una factura por su ID.
@@ -113,7 +67,6 @@ public class CitaController {
 	     */
 	   
 	    @GetMapping("/{id}")
-<<<<<<< HEAD
 	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {
 	      
 	            Cita citas = citaS.buscarCitabyId(id);
@@ -129,7 +82,6 @@ public class CitaController {
 	    }
 	    
 	    /**
-=======
 	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {	      
 	            Cita cita = citaS.buscarCitabyId(id);	            
 	            CitaDTO citaDto=modelMapper.map(cita, CitaDTO.class);
@@ -147,7 +99,6 @@ public class CitaController {
 	    }    
 
 		/**
->>>>>>> 4f0eca1ca5e6964cc074c22a95d1fc2e7666a843
 	     * Maneja las solicitudes POST para guardar una nueva factura.
 	     * @param facturaDto La factura a guardar.
 	     * @return ResponseEntity con la FacturaDTO guardada en caso de éxito o un mensaje de error si falla la operación.
