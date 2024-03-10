@@ -10,7 +10,9 @@ package edu.unc.clinica.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +24,7 @@ import lombok.Data;
 @Entity
 //Anotación de Lombok que agrega automáticamente los métodos getter, setter, equals, hashCode y toString
 @Data
-public class Especialidad {
+public class Especialidad extends RepresentationModel<Especialidad>{
 
 
 	// Identificador único generado automáticamente para la especialidad
@@ -37,6 +39,7 @@ public class Especialidad {
 	
 	// Relación uno a muchos con la clase Medico, mapeada por el campo "especialidad" en la clase Medico
 	@OneToMany(mappedBy="especialidad")
+	@JsonIgnore
 	private List<Medico> medicos=new ArrayList<>();
 	
 }

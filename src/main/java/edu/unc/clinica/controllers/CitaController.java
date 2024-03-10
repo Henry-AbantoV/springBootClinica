@@ -63,20 +63,7 @@ public class CitaController {
 	            List<Cita> citas = citaS.listarCitas();
 	            if(citas==null || citas.isEmpty()) {
 	            	return ResponseEntity.noContent().build();
-	            }
-	            /*else {
-	            	List<CitaDTO> citaDto=citas.stream()
-	            			.map(cita -> {
-	                            CitaDTO citaDTO = modelMapper.map(cita, CitaDTO.class);	                            
-	                            return citaDTO;
-	                        })
-	                        .collect(Collectors.toList());
-
-	                HttpHeaders headers = new HttpHeaders();
-	                headers.add("Api-Version", "1");
-
-	                return ResponseEntity.ok().headers(headers).body(citaDto);
-	            } */
+	            }	            
 	            for(Cita cita:citas) {
 	            	cita.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(cita.getIdCita())).withSelfRel());
 		            cita.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withRel(IanaLinkRelations.COLLECTION));

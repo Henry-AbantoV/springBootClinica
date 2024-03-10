@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -38,15 +42,21 @@ public class Paciente extends RepresentationModel<Paciente>{
     private Long idPaciente;
 
     // Nombres del paciente.
+	@NotNull(message="No puede ser nulo el campo")
+	@NotBlank
     private String nombres;
 
     // Apellidos del paciente.
+	@NotNull
+	@NotBlank
     private String apellidos;
 
     // Fecha de nacimiento del paciente   
     private Date fechaNacimiento;
 
-    //Género del paciente.    
+    //Género del paciente. 
+    @NotNull
+	@NotBlank
     private String genero;
 
     // DNI del paciente.
@@ -59,6 +69,9 @@ public class Paciente extends RepresentationModel<Paciente>{
     private String telefono;
 
     // Correo electrónico del paciente.
+    @NotNull
+	@NotBlank
+	@Email
     private String correoElectronico;
     
     //Una lista de citas asociadas a paciente.
