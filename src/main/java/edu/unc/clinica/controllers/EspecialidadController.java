@@ -6,6 +6,9 @@
 
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,9 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -28,7 +34,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Especialidad;
+import edu.unc.clinica.dto.CitaDTO;
 import edu.unc.clinica.dto.EspecialidadDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
@@ -63,12 +71,14 @@ public class EspecialidadController {
 		List<Especialidad> especialidad = especS.listarEspecialidades();
 		if (especialidad == null || especialidad.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
-			List<EspecialidadDTO> espDto = especialidad.stream()
-					.map(espec -> modelMapper.map(espec, EspecialidadDTO.class)).collect(Collectors.toList());
-			ApiResponse<List<EspecialidadDTO>> response = new ApiResponse<>(true, "Lista de Especialidades", espDto);
-			return ResponseEntity.ok(response);
-		}
+		}  
+		for(Especialidad especial:especialidad) {
+        	especial.add(linkTo(methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especial.getIdEspecialidad())).withSelfRel());
+            especial.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<Especialidad> modelo = CollectionModel.of(especialidad);
+        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+        return new ResponseEntity<>(especialidad, HttpStatus.OK);
 	}
 	
 	
@@ -83,10 +93,12 @@ public class EspecialidadController {
 	public ResponseEntity<?> obtenerEspecialidadPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		Especialidad especialidad = especS.buscarEspecialidadbyId(id);
-
 		EspecialidadDTO especialidadDto = modelMapper.map(especialidad, EspecialidadDTO.class);
-		ApiResponse<EspecialidadDTO> response = new ApiResponse<>(true, "Lista de Especialidades", especialidadDto);
-		return ResponseEntity.ok(response);
+		EntityModel<EspecialidadDTO> resource = EntityModel.of(especialidadDto);
+        especialidad.add(linkTo(methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especialidad.getIdEspecialidad())).withSelfRel());
+		//ApiResponse<EspecialidadDTO> response = new ApiResponse<>(true, "Lista de Especialidades", especialidadDto);
+         return new ResponseEntity<>(especialidad, HttpStatus.OK);
+         //return ResponseEntity.ok(response);
 	}
 	
 	
@@ -164,10 +176,12 @@ public class EspecialidadController {
      */
 	@PatchMapping("/{IdEsp}/asignarMedicos/{IdMedic}")
 	public ResponseEntity<?> asignarMedicos( @PathVariable Long IdEsp,
-			@PathVariable Long IdMedic) throws EntityNotFoundException, IllegalOperationException {
-		
+			@PathVariable Long IdMedic) throws EntityNotFoundException, IllegalOperationException {		
 		Especialidad especialidad = especS.asignarMedicos(IdEsp, IdMedic);
-		return ResponseEntity.ok(especialidad);
+		
+		ApiResponse<?> response = new ApiResponse<>(true, "Especialidad asignada correctamente", null);
+		//return ResponseEntity.ok(especialidad);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	

@@ -33,12 +33,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.dto.PacienteDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
+import edu.unc.clinica.repositories.PacienteRepository;
 import edu.unc.clinica.services.PacienteService;
 import edu.unc.clinica.util.ApiResponse;
 
@@ -51,6 +53,8 @@ public class PacienteController {
 	/** The paciente S. */
 	@Autowired
 	private PacienteService pacienteS;
+	
+	private PacienteRepository pacienteR;
 
 	/** The model mapper. */
 	@Autowired
@@ -119,12 +123,51 @@ public class PacienteController {
      * @return ResponseEntity con la información del paciente guardado.
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
      */
-	@PostMapping
+	/*@PostMapping
+	ModelAndView ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result, RedirectAttributes ra)
+			throws IllegalOperationException {
+
+		if (result.hasErrors()) {
+			return new ModelAndView("nuevo").addObject("pacienteDto", new Paciente());
+		}
+		pacienteR.save(pacienteDto);		
+			
+			
+			//return ResponseEntity.badRequest().body(rpta);
+			
+			//ApiResponse<Object> message = new ApiResponse<>(false,ex.getMessage(), null);
+	        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rpta);
+			
+			
+			
+		}
+		Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
+		pacienteS.grabarPaciente(nuevoPaciente);
+		PacienteDTO savePacienteDto = modelMapper.map(nuevoPaciente, PacienteDTO.class);
+		ApiResponse<PacienteDTO> response = new ApiResponse<>(true, "Paciente guardado en la BD", savePacienteDto);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}*/
+	
+	
+	
 	public ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result)
 			throws IllegalOperationException {
 
 		if (result.hasErrors()) {
-			return validar(result);
+			//return validar(result);
+			Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
+			PacienteDTO savePacienteDto = modelMapper.map(nuevoPaciente, PacienteDTO.class);
+			ApiResponse<PacienteDTO> rpta = new ApiResponse<>(true, "Revise los campos", savePacienteDto);
+			
+			
+			//return ResponseEntity.badRequest().body(rpta);
+			
+			//ApiResponse<Object> message = new ApiResponse<>(false,ex.getMessage(), null);
+	        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rpta);
+			
+			
+			
 		}
 		Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
 		pacienteS.grabarPaciente(nuevoPaciente);
@@ -134,6 +177,12 @@ public class PacienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
 	}
+	
+	
+	
+	
+	
+	
 	 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.

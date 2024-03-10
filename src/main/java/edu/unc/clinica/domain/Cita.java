@@ -7,6 +7,8 @@ package edu.unc.clinica.domain;
 
 import java.util.Date;
 
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +26,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class Cita{
+public class Cita extends RepresentationModel<Cita>{
 	
 	// Identificador único de la cita.
     @Id
@@ -48,5 +50,7 @@ public class Cita{
     // Paciente asociado a la cita
     @ManyToOne
     @JoinColumn(name="id_Paciente")
-    private Paciente paciente;    
+    private Paciente paciente;
+
+	
 }
