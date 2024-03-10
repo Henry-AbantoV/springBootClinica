@@ -5,6 +5,9 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,10 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.dto.PacienteDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
@@ -60,12 +68,21 @@ public class PacienteController {
 		List<Paciente> pacientes = pacienteS.listarPacientes();
 		if (pacientes == null || pacientes.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
+		} 
+		/*else {
 			List<PacienteDTO> pacienteDto = pacientes.stream()
 					.map(paciente -> modelMapper.map(paciente, PacienteDTO.class)).collect(Collectors.toList());
 			ApiResponse<List<PacienteDTO>> response = new ApiResponse<>(true, "Lista de pacientes", pacienteDto);
 			return ResponseEntity.ok(response);
-		}
+		}*/
+		
+		for(Paciente paciente:pacientes) {
+        	paciente.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(paciente.getIdPaciente())).withSelfRel());
+            paciente.add(linkTo(methodOn(PacienteController.class).obtenerTodosPacientes()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<Paciente> modelo = CollectionModel.of(pacientes);
+        modelo.add(linkTo(methodOn(PacienteController.class).obtenerTodosPacientes()).withSelfRel());
+        return new ResponseEntity<>(pacientes, HttpStatus.OK);
 
 	}
 
@@ -81,12 +98,19 @@ public class PacienteController {
 	public ResponseEntity<?> obtenerPacientesPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		Paciente pacientes = pacienteS.buscarPacienteById(id);
+		if (pacientes == null) {
+            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + id);
+        }
 
-		PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
-		ApiResponse<PacienteDTO> response = new ApiResponse<>(true, "Paciente", pacienteDto);
-		return ResponseEntity.ok(response);
+        PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
 
-	}
+        // Crear enlace HATEOAS para el recurso
+        pacientes.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(pacientes.getIdPaciente())).withSelfRel());
+        
+        return new ResponseEntity<>(pacientes, HttpStatus.OK);
+    }
+		
+	
 	 /**
      * Endpoint para guardar un nuevo paciente.
      * 
