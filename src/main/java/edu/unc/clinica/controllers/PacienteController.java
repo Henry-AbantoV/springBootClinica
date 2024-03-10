@@ -37,10 +37,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
+import edu.unc.clinica.dto.CitaDTO;
 import edu.unc.clinica.dto.PacienteDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
+import edu.unc.clinica.repositories.CitaRepository;
 import edu.unc.clinica.repositories.PacienteRepository;
+import edu.unc.clinica.services.CitaService;
 import edu.unc.clinica.services.PacienteService;
 import edu.unc.clinica.util.ApiResponse;
 
@@ -54,8 +57,6 @@ public class PacienteController {
 	@Autowired
 	private PacienteService pacienteS;
 	
-	private PacienteRepository pacienteR;
-
 	/** The model mapper. */
 	@Autowired
 	private ModelMapper modelMapper;
@@ -122,35 +123,9 @@ public class PacienteController {
      * @param result BindingResult para manejar errores de validación.
      * @return ResponseEntity con la información del paciente guardado.
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
-     */
-	/*@PostMapping
-	ModelAndView ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result, RedirectAttributes ra)
-			throws IllegalOperationException {
-
-		if (result.hasErrors()) {
-			return new ModelAndView("nuevo").addObject("pacienteDto", new Paciente());
-		}
-		pacienteR.save(pacienteDto);		
-			
-			
-			//return ResponseEntity.badRequest().body(rpta);
-			
-			//ApiResponse<Object> message = new ApiResponse<>(false,ex.getMessage(), null);
-	        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rpta);
-			
-			
-			
-		}
-		Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
-		pacienteS.grabarPaciente(nuevoPaciente);
-		PacienteDTO savePacienteDto = modelMapper.map(nuevoPaciente, PacienteDTO.class);
-		ApiResponse<PacienteDTO> response = new ApiResponse<>(true, "Paciente guardado en la BD", savePacienteDto);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	}*/
+     */	
 	
-	
-	
+@PostMapping
 	public ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result)
 			throws IllegalOperationException {
 
@@ -176,14 +151,7 @@ public class PacienteController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
-	}
-	
-	
-	
-	
-	
-	
-	 
+	} 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.
      * 
@@ -243,7 +211,29 @@ public class PacienteController {
      * 
      * @param result BindingResult con los errores de validación.
      * @return ResponseEntity con los errores formateados.
+	 * @throws IllegalOperationException 
      */
+	
+	@GetMapping(value="/{idPaciente}/citas")
+	public ResponseEntity<?> obtenerCitasPaciente(@PathVariable Long idPaciente) throws EntityNotFoundException, IllegalOperationException {
+		List<Cita> citas = pacienteS.obtenerCitasPaciente(idPaciente);
+		List<CitaDTO> citaDTO = citas.stream().map(cita -> modelMapper.map(cita, CitaDTO.class))
+				.collect(Collectors.toList());
+		ApiResponse<List<CitaDTO>> response = new ApiResponse<>(true, "Citas obtenidas con éxito", citaDTO);
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping(value="/{idPaciente}/ObtenerCitas/{idCita}")
+	public ResponseEntity<?> obtenerCitaDeLista(@PathVariable Long idPaciente, @PathVariable Long idCita)
+			throws EntityNotFoundException, IllegalOperationException {
+		
+		Cita cita = pacienteS.obtenerCitaPorId(idPaciente, idCita);
+		
+		CitaDTO citaDTO = modelMapper.map(cita, CitaDTO.class);
+		ApiResponse<CitaDTO> response = new ApiResponse<>(true, "Cita obtenida con éxito", citaDTO);
+		return ResponseEntity.ok(response);
+	}
+	
 	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 		Map<String, String> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {

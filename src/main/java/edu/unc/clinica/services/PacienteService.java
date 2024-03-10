@@ -2,7 +2,7 @@ package edu.unc.clinica.services;
 
 import java.util.List;
 
-
+import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
@@ -62,5 +62,10 @@ public interface PacienteService {
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
      */
 	Paciente asignarCita(Long idPaciente, Long IdCita) throws EntityNotFoundException, IllegalOperationException;
+	
+	List<Cita> obtenerCitasPaciente(Long idPaciente) throws EntityNotFoundException, IllegalOperationException;
+	
+	Cita obtenerCitaPorId(Long idPaciente,Long idCita)throws EntityNotFoundException, IllegalOperationException;
+	
 	
 }
