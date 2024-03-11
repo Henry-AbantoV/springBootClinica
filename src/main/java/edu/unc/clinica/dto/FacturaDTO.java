@@ -10,7 +10,11 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Bag;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
@@ -76,9 +80,7 @@ public class FacturaDTO {
     /**
      * Lista de citas asociadas a la factura.
      */
-	@JsonIgnore
 	 private List<Cita> citas=new ArrayList<>();
-	
 	/**
      * Lista de pacientes asociados a la factura.
      */
