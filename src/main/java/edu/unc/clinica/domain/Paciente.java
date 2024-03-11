@@ -29,65 +29,58 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
-
 @Entity
 @Data
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idPaciente")
-public class Paciente extends RepresentationModel<Paciente>{
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idPaciente")
+public class Paciente extends RepresentationModel<Paciente> {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPaciente;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long idPaciente;
 
-    // Nombres del paciente.
-	@NotNull(message="No puede ser nulo el campo")
+	// Nombres del paciente.
+	@NotNull(message = "No puede ser nulo el campo")
 	@NotBlank
-    private String nombres;
+	private String nombres;
 
-    // Apellidos del paciente.
+	// Apellidos del paciente.
 	@NotNull
 	@NotBlank
-    private String apellidos;
+	private String apellidos;
 
-    // Fecha de nacimiento del paciente   
-    private Date fechaNacimiento;
+	// Fecha de nacimiento del paciente
+	private Date fechaNacimiento;
 
-    //Género del paciente. 
-    @NotNull
+	// Género del paciente.
+	@NotNull
 	@NotBlank
-    private String genero;
+	private String genero;
 
-    // DNI del paciente.
-    private String dni;
+	// DNI del paciente.
+	private String dni;
 
-    // Dirección del paciente.    
-    private String direccion;
+	// Dirección del paciente.
+	private String direccion;
 
-    // Número de teléfono del paciente.
-    private String telefono;
+	// Número de teléfono del paciente.
+	private String telefono;
 
-    // Correo electrónico del paciente.
-    @NotNull
+	// Correo electrónico del paciente.
+	@NotNull
 	@NotBlank
 	@Email
-    private String correoElectronico;
-    
-    //Una lista de citas asociadas a paciente.
-    @OneToMany (mappedBy = "paciente")
-    private List<Cita> citas = new ArrayList<>();
+	private String correoElectronico;
+	// Una lista de médicos asociados a este paciente.
+	@ManyToMany
+	@JoinTable(name = "Consulta", joinColumns = @JoinColumn(name = "medico_id"), inverseJoinColumns = @JoinColumn(name = "paciente_id"))
+	private List<Medico> medicos = new ArrayList<>();
 
-   //Una lista de médicos asociados a este paciente.
-   @ManyToMany
-   @JoinTable(
-		  name="Consulta",
-		  joinColumns = @JoinColumn(name = "medico_id"),
-		  inverseJoinColumns = @JoinColumn(name = "paciente_id"))
-   private List<Medico> medicos = new ArrayList<>();        
-    
-    //Historial médico asociado a paciente. 
-    @OneToOne(mappedBy="paciente")    
-    private HistorialMedico historialMedico;  
+	// Historial médico asociado a paciente.
+	@OneToOne(mappedBy = "paciente")
+	private HistorialMedico historialMedico;
+
+	// Una lista de citas asociadas a paciente.
+	@OneToMany(mappedBy = "paciente")
+	private List<Cita> citas = new ArrayList<>();
 
 }

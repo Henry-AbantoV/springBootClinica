@@ -36,11 +36,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.unc.clinica.domain.Cita;
+import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.domain.Paciente;
+import edu.unc.clinica.dto.CitaDTO;
+import edu.unc.clinica.dto.FacturaDTO;
 import edu.unc.clinica.dto.PacienteDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
 import edu.unc.clinica.repositories.PacienteRepository;
+import edu.unc.clinica.services.CitaService;
 import edu.unc.clinica.services.PacienteService;
 import edu.unc.clinica.util.ApiResponse;
 
@@ -55,6 +59,8 @@ public class PacienteController {
 	private PacienteService pacienteS;
 	
 	private PacienteRepository pacienteR;
+    @Autowired
+    private CitaService citaS;
 
 	/** The model mapper. */
 	@Autowired
@@ -98,12 +104,11 @@ public class PacienteController {
      * @return ResponseEntity con la información del paciente solicitado.
      * @throws EntityNotFoundException Si el paciente no se encuentra.
      */
-	@GetMapping("/{id}")
-	public ResponseEntity<?> obtenerPacientesPorId(@PathVariable Long id) throws EntityNotFoundException {
-
-		Paciente pacientes = pacienteS.buscarPacienteById(id);
+	@GetMapping("/{idPaciente}")
+	public ResponseEntity<?> obtenerPacientesPorId(@PathVariable Long idPaciente) throws EntityNotFoundException {
+	 	Paciente pacientes = pacienteS.buscarPacienteById(idPaciente);
 		if (pacientes == null) {
-            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + id);
+            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + idPaciente);
         }
 
         PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
@@ -123,34 +128,7 @@ public class PacienteController {
      * @return ResponseEntity con la información del paciente guardado.
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
      */
-	/*@PostMapping
-	ModelAndView ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result, RedirectAttributes ra)
-			throws IllegalOperationException {
-
-		if (result.hasErrors()) {
-			return new ModelAndView("nuevo").addObject("pacienteDto", new Paciente());
-		}
-		pacienteR.save(pacienteDto);		
-			
-			
-			//return ResponseEntity.badRequest().body(rpta);
-			
-			//ApiResponse<Object> message = new ApiResponse<>(false,ex.getMessage(), null);
-	        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rpta);
-			
-			
-			
-		}
-		Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
-		pacienteS.grabarPaciente(nuevoPaciente);
-		PacienteDTO savePacienteDto = modelMapper.map(nuevoPaciente, PacienteDTO.class);
-		ApiResponse<PacienteDTO> response = new ApiResponse<>(true, "Paciente guardado en la BD", savePacienteDto);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	}*/
-	
-	
-	
+	@PostMapping
 	public ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result)
 			throws IllegalOperationException {
 
@@ -177,13 +155,6 @@ public class PacienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
 	}
-	
-	
-	
-	
-	
-	
-	 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.
      * 
@@ -238,6 +209,7 @@ public class PacienteController {
 		return ResponseEntity.ok(paciente);
 
 	}
+	
 	/**
      * Método privado para manejar errores de validación en la entrada de datos de los endpoints.
      * 
@@ -250,5 +222,55 @@ public class PacienteController {
 			errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
 		});
 		return ResponseEntity.badRequest().body(errores);
+	}
+	
+	/**
+     * Obtiene todas las citas asociadas a un paciente.
+     *
+     * @param id Identificador del paciente.
+     * @return ResponseEntity con la lista de citas del paciente solicitado.
+     * @throws EntityNotFoundException Si el paciente no se encuentra.
+     */
+    @GetMapping("/{idPaciente}/citas")
+    public ResponseEntity<?> obtenerCitas(@PathVariable Long idPaciente) throws EntityNotFoundException {
+		List<Cita> citas = pacienteS.obtenerCitas(idPaciente);
+		List<CitaDTO> citasDTO = citas.stream().map(cita -> modelMapper.map(cita, CitaDTO.class))
+				.collect(Collectors.toList());
+		ApiResponse<List<CitaDTO>> response = new ApiResponse<>(true, "Citas obtenidas con éxito", citasDTO);
+		return ResponseEntity.ok(response);
+    }
+    
+	/**
+	 * Obtiene una cita específica de la lista de citas de un paciente.
+	 *
+	 * @param idPaciente  El ID del paciente del que se desea obtener la cita.
+	 * @param idCita  El ID de la cita que se desea obtener.
+	 * @return ResponseEntity con la cita obtenida y un mensaje de éxito.
+	 * @throws EntityNotFoundException    Si no se encuentra el paciente o la cita con los IDs proporcionados.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación de obtención de la cita.
+	 */
+	@GetMapping("/{idPaciente}/citas/{idCita}")
+	public ResponseEntity<?> obtenerCitaDeLaLista(@PathVariable Long idPaciente, @PathVariable Long idCita)
+			throws EntityNotFoundException, IllegalOperationException {
+		Cita cita = pacienteS.obtenerCitaPorId(idPaciente, idCita);
+		CitaDTO citaDTO = modelMapper.map(cita, CitaDTO.class);
+		ApiResponse<CitaDTO> response = new ApiResponse<>(true, "Cita obtenida con éxito", citaDTO);
+		return ResponseEntity.ok(response);
+	}
+	
+	
+	/**
+	* Obtiene una factura específica de una cita de un paciente.*/
+	
+	@GetMapping("/{idPaciente}/citas/{idCita}/facturas")
+	public ResponseEntity<?> obtenerFacturas(@PathVariable Long idPaciente, @PathVariable Long idCita)
+			throws EntityNotFoundException, IllegalOperationException {
+		List<Factura> facturas = pacienteS.obtenerFacturas(idPaciente, idCita);
+		List<FacturaDTO> facturasDTO= facturas.stream()
+				.map(factura -> modelMapper.map(factura, FacturaDTO.class)).collect(Collectors.toList());
+		ApiResponse<List<FacturaDTO>> response = new ApiResponse<>(true, "Facturas obtenidas con éxito",
+				facturasDTO);
+		return ResponseEntity.ok(response);
+		
 	}
 }

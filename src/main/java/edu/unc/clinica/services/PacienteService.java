@@ -2,7 +2,8 @@ package edu.unc.clinica.services;
 
 import java.util.List;
 
-
+import edu.unc.clinica.domain.Cita;
+import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
@@ -63,4 +64,35 @@ public interface PacienteService {
      */
 	Paciente asignarCita(Long idPaciente, Long IdCita) throws EntityNotFoundException, IllegalOperationException;
 	
+	/**
+	 * Obtiene la lista de citas asociadas a un paciente
+	 *
+	 * @param idPaciente El ID del paciente del cual se desean obtener las citas.
+	 * @return Una lista de citas asociadas al paciente.
+	 * @throws EntityNotFoundException Si no se encuentra el cliente con el ID proporcionado.
+	 */
+    List<Cita> obtenerCitas(Long idPaciente) throws EntityNotFoundException;
+    
+    /**
+	 * Obtiene una reserva especifica asociada a un cliente.
+	 *
+	 * @param idCliente El ID del cliente al que esta asociada la reserva.
+	 * @param idReserva El ID de la reserva que se desea obtener.
+	 * @return La reserva especifica asociada al cliente.
+	 * @throws EntityNotFoundException    Si no se encuentra el cliente o la reserva con los IDs proporcionados.
+	 * @throws IllegalOperationException Si la reserva no fue realizada por el cliente.
+	 */
+    Cita obtenerCitaPorId(Long idPaciente,Long idCita) throws EntityNotFoundException,IllegalOperationException ;
+	
+    /**
+   	 * Obtiene la lista de facturas asociadas a una cita de un paciente.
+   	 *
+   	 * @param idPaciente El ID del paciente al que esta asociada la cita.
+   	 * @param idCita El ID de la cita de la cual se desean obtener las facturas.
+   	 * @return Una lista de facturas asociadas a la cita del paciente.
+   	 * @throws EntityNotFoundException    Si no se encuentra el cliente, la reserva o alguna habitacion asociada.
+   	 * @throws IllegalOperationException Si la reserva no pertenece al cliente o no tiene habitaciones.
+   	 */
+    List<Factura> obtenerFacturas(Long idPaciente, Long idCita) throws EntityNotFoundException,IllegalOperationException;;
+    
 }
