@@ -123,34 +123,7 @@ public class PacienteController {
      * @return ResponseEntity con la información del paciente guardado.
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
      */
-	/*@PostMapping
-	ModelAndView ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result, RedirectAttributes ra)
-			throws IllegalOperationException {
-
-		if (result.hasErrors()) {
-			return new ModelAndView("nuevo").addObject("pacienteDto", new Paciente());
-		}
-		pacienteR.save(pacienteDto);		
-			
-			
-			//return ResponseEntity.badRequest().body(rpta);
-			
-			//ApiResponse<Object> message = new ApiResponse<>(false,ex.getMessage(), null);
-	        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rpta);
-			
-			
-			
-		}
-		Paciente nuevoPaciente = modelMapper.map(pacienteDto, Paciente.class);
-		pacienteS.grabarPaciente(nuevoPaciente);
-		PacienteDTO savePacienteDto = modelMapper.map(nuevoPaciente, PacienteDTO.class);
-		ApiResponse<PacienteDTO> response = new ApiResponse<>(true, "Paciente guardado en la BD", savePacienteDto);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	}*/
-	
-	
-	
+	@PostMapping
 	public ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result)
 			throws IllegalOperationException {
 
@@ -177,12 +150,6 @@ public class PacienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
 	}
-	
-	
-	
-	
-	
-	
 	 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.

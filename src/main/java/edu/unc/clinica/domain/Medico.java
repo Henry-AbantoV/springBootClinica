@@ -9,6 +9,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 
+import edu.unc.clinica.domainModels.Departamento;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 /**
@@ -62,4 +66,22 @@ public class Medico {
 	
     @JsonIdentityReference(alwaysAsId = true)
 	private Medico jefe;
+	
+	
+	////comunicacion con otro microservicio
+	
+	@Transient
+	private List<Departamento> departamentos;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "curso_id")
+	private List<MedicoDepartamento> medicDep;
+	
+	 public void addmedicoDepa(MedicoDepartamento medicDepa) {
+		 medicDep.add(medicDepa);
+	    }
+
+	    public void removeMedicoDepa(MedicoDepartamento medicDepa) {
+	    	medicDep.remove(medicDepa);
+	    }
 }
