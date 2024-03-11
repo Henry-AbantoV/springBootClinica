@@ -20,6 +20,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Esta clase representa la entidad de usuario en el sistema.
+ * Contiene información sobre los usuarios, como su identificador, nombre de usuario, contraseña, roles, etc.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,47 +32,68 @@ import lombok.NoArgsConstructor;
 @Table(name="User", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User  implements UserDetails{
 	
+	/**
+     * El identificador único del usuario.
+     */
 	@Id
 	@GeneratedValue
 	Integer id;
 	
+	/**
+     * El nombre de usuario del usuario.
+     */
 	@Basic
 	@Column(nullable = false)
 	String username;
+	
+	/**
+     * El apellido del usuario.
+     */
 	String lastname;
+	
+	 /**
+     * El primer nombre del usuario.
+     */
 	String firstname;
+	
+	/**
+     * La contraseña del usuario.
+     */
 	String password;
 	
+	/**
+     * El rol del usuario en el sistema.
+     */
 	@Enumerated(EnumType.STRING)
 	Role role;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
+		// Retorna los roles del usuario como GrantedAuthority
 		return List.of(new SimpleGrantedAuthority((role.name())));
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
+		// La cuenta del usuario nunca expira
 		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
+		 // La cuenta del usuario nunca se bloquea
 		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
+		// Las credenciales del usuario nunca expiran
 		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
+		 // La cuenta del usuario siempre está habilitada
 		return true;
 	}
 	
