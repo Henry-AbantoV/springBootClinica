@@ -62,9 +62,7 @@ public interface MedicoService {
      * @throws IllegalOperationException Si ocurre una operación ilegal durante la operación.
      */
 	Medico asignarPaciente(Long idMedico, Long idPaciente) throws EntityNotFoundException, IllegalOperationException;	
-<<<<<<< HEAD
-=======
-	
+
 	/**
      * Asigna un jefe a un médico.
      * @param idMedico El ID del médico al que se asignará el jefe.
@@ -73,13 +71,15 @@ public interface MedicoService {
      * @throws EntityNotFoundException Si no se encuentra ningún médico o jefe con los IDs especificados.
      * @throws IllegalOperationException Si ocurre una operación ilegal durante la operación.
      */
->>>>>>> f9ee07c3ddb5090e6d7b7cd950bdc75d41c83555
+
 	Medico asignarJefe(Long idMedico, Long IdMedJefe) throws EntityNotFoundException, IllegalOperationException;
+	
+	
 	
 	//Comunicacion entre microservicios
 	void eliminarMedicoDepa(Long id);
-	Optional<Departamento>asignarDepartamento(Departamento depa, Long idMedico);
-	Optional<Departamento> crearDepartamento(Departamento depa, Long idMedico);
-	Optional<Departamento> eliminarDepartamento(Departamento depa, Long idMedico);
+	Optional<Departamento>asignarDepartamento(Departamento depa, Long idDepa);
+	Optional<Departamento> crearDepartamento(Departamento depa, Long idDepa);
+	Optional<Departamento> eliminarDepartamento(Departamento depa, Long iddepa);
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.unc.clinica.domainModels.Departamento;
 
-@FeignClient(name="SpringDepartClinica", url="localhost:8020/api/departamentos")
+@FeignClient(name="SpringDepartClinica", url="http://localhost:8020/api/departamentos")
 public interface DepaClientRest {
 
 	@GetMapping("/{id}")

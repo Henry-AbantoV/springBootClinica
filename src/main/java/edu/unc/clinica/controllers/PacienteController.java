@@ -59,7 +59,10 @@ public class PacienteController {
 	@Autowired
 	private PacienteService pacienteS;
 
+	@Autowired
 	private PacienteRepository pacienteR;
+	
+	
 	@Autowired
 	private CitaService citaS;
 	/** The model mapper. */
@@ -110,8 +113,8 @@ public class PacienteController {
 	public ResponseEntity<?> obtenerPacientesPorId(@PathVariable Long idPaciente) throws EntityNotFoundException {
 		Paciente pacientes = pacienteS.buscarPacienteById(idPaciente);
 		if (pacientes == null) {
-<<<<<<< HEAD
-            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + id);
+
+            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + idPaciente);
         }
 
         PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
@@ -122,28 +125,6 @@ public class PacienteController {
         return new ResponseEntity<>(pacientes, HttpStatus.OK);
     }
 		
-	
-	 /**
-     * Endpoint para guardar un nuevo paciente.
-     * 
-     * @param pacienteDto DTO del paciente a guardar.
-     * @param result BindingResult para manejar errores de validación.
-     * @return ResponseEntity con la información del paciente guardado.
-     * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
-     */
-=======
-			throw new EntityNotFoundException("Paciente no encontrado con el ID: " + idPaciente);
-		}
-
-		PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
-
-		// Crear enlace HATEOAS para el recurso
-		pacientes.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(pacientes.getIdPaciente()))
-				.withSelfRel());
-
-		return new ResponseEntity<>(pacientes, HttpStatus.OK);
-	}
-
 	/**
 	 * Endpoint para guardar un nuevo paciente.
 	 * 
@@ -153,7 +134,7 @@ public class PacienteController {
 	 * @throws IllegalOperationException Si la operación no cumple con las reglas de
 	 *                                   negocio.
 	 */
->>>>>>> f9ee07c3ddb5090e6d7b7cd950bdc75d41c83555
+
 	@PostMapping
 	public ResponseEntity<?> guardarPaciente(@Valid @RequestBody PacienteDTO pacienteDto, BindingResult result)
 			throws IllegalOperationException {
@@ -177,7 +158,7 @@ public class PacienteController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
-<<<<<<< HEAD
+
 	 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.
@@ -188,20 +169,8 @@ public class PacienteController {
      * @throws EntityNotFoundException Si el paciente no se encuentra.
      * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
      */
-=======
 
-	/**
-	 * Endpoint para actualizar la información de un paciente existente.
-	 * 
-	 * @param id          Identificador del paciente a actualizar.
-	 * @param pacienteDto DTO con la información actualizada del paciente.
-	 * @return ResponseEntity con la información del paciente actualizado.
-	 * @throws EntityNotFoundException   Si el paciente no se encuentra.
-	 * @throws IllegalOperationException Si la operación no cumple con las reglas de
-	 *                                   negocio.
-	 */
 
->>>>>>> f9ee07c3ddb5090e6d7b7cd950bdc75d41c83555
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<PacienteDTO>> actualizarPaciente(@PathVariable Long id,
 			@RequestBody PacienteDTO pacienteDto) throws EntityNotFoundException, IllegalOperationException {
@@ -259,16 +228,6 @@ public class PacienteController {
 	 * @throws IllegalOperationException
 	 */
 
-	@GetMapping(value = "/{idPaciente}/citas")
-	public ResponseEntity<?> obtenerCitasPaciente(@PathVariable Long idPaciente)
-			throws EntityNotFoundException, IllegalOperationException {
-		List<Cita> citas = pacienteS.obtenerCitasPaciente(idPaciente);
-		List<CitaDTO> citaDTO = citas.stream().map(cita -> modelMapper.map(cita, CitaDTO.class))
-				.collect(Collectors.toList());
-		ApiResponse<List<CitaDTO>> response = new ApiResponse<>(true, "Citas obtenidas con éxito", citaDTO);
-		return ResponseEntity.ok(response);
-	}
-
 	@GetMapping(value = "/{idPaciente}/ObtenerCitas/{idCita}")
 	public ResponseEntity<?> obtenerCitaDeLista(@PathVariable Long idPaciente, @PathVariable Long idCita)
 			throws EntityNotFoundException, IllegalOperationException {
@@ -280,6 +239,13 @@ public class PacienteController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Obtiene todas las citas asociadas a un paciente.
+	 *
+	 * @param id Identificador del paciente.
+	 * @return ResponseEntity con la lista de citas del paciente solicitado.
+	 * @throws EntityNotFoundException Si el paciente no se encuentra.
+	 */
 	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 		Map<String, String> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {
@@ -288,13 +254,7 @@ public class PacienteController {
 		return ResponseEntity.badRequest().body(errores);
 	}
 
-	/**
-	 * Obtiene todas las citas asociadas a un paciente.
-	 *
-	 * @param id Identificador del paciente.
-	 * @return ResponseEntity con la lista de citas del paciente solicitado.
-	 * @throws EntityNotFoundException Si el paciente no se encuentra.
-	 */
+	
 	@GetMapping("/{idPaciente}/citas")
 	public ResponseEntity<?> obtenerCitas(@PathVariable Long idPaciente) throws EntityNotFoundException {
 		List<Cita> citas = pacienteS.obtenerCitas(idPaciente);

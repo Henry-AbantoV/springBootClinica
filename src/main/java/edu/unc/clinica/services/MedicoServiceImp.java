@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ import jakarta.persistence.PersistenceException;
  */
 @Service
 public class MedicoServiceImp implements MedicoService {
-<<<<<<< HEAD
+
 
 	@Autowired
 	private MedicoRepository medicoRep;
@@ -39,21 +40,14 @@ public class MedicoServiceImp implements MedicoService {
 
 	@Autowired
 	private DepaClientRest depaClient;
-
-=======
 	
-	@Autowired
-	private MedicoRepository medicoRep;
-	
-	@Autowired
-	private PacienteRepository pacienteRep;
 
 	/**
 	 * Obtiene una lista de todos los médicos.
 	 *
 	 * @return Lista de médicos.
 	 */
->>>>>>> f9ee07c3ddb5090e6d7b7cd950bdc75d41c83555
+
 	@Override
 	@Transactional
 	public List<Medico> listarMedicos() {
@@ -162,10 +156,7 @@ public class MedicoServiceImp implements MedicoService {
 			throw new PersistenceException("Error al asignar paciente al médico", e);
 		}
 	}
-<<<<<<< HEAD
 
-=======
-	
 	/**
 	 * Asigna un médico como jefe de otro médico.
 	 *
@@ -174,8 +165,7 @@ public class MedicoServiceImp implements MedicoService {
 	 * @return El médico actualizado con el jefe asignado.
 	 * @throws EntityNotFoundException Si no se encuentra el médico o el jefe con los ID proporcionados.
 	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
-	 */	
->>>>>>> f9ee07c3ddb5090e6d7b7cd950bdc75d41c83555
+	 */
 	@Override
 	@Transactional
 	public Medico asignarJefe(Long idMedico, Long IdMedJefe) throws EntityNotFoundException, IllegalOperationException {
@@ -198,8 +188,8 @@ public class MedicoServiceImp implements MedicoService {
 	///////////////////////// microservicios
 	@Override
 	@Transactional
-	public Optional<Departamento> asignarDepartamento(Departamento depa, Long idMedico) {
-		Optional<Medico> o = medicoRep.findById(idMedico);
+	public Optional<Departamento> asignarDepartamento(Departamento depa, Long idDepa) {
+		Optional<Medico> o = medicoRep.findById(idDepa);
 		if (o.isPresent()) {
 			Departamento depaC = depaClient.detalleDepaMedicos(depa.getIdDepartamento());
 
@@ -214,7 +204,7 @@ public class MedicoServiceImp implements MedicoService {
 
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public void eliminarMedicoDepa(Long id) {
 		medicoRep.eliminarMedicoDepaPorId(id);
@@ -222,8 +212,8 @@ public class MedicoServiceImp implements MedicoService {
 
 	@Override
 	 @Transactional
-	public Optional<Departamento> crearDepartamento(Departamento depa, Long idMedico) {
-		  Optional<Medico> o = medicoRep.findById(idMedico);
+	public Optional<Departamento> crearDepartamento(Departamento depa, Long idDepa) {
+		  Optional<Medico> o = medicoRep.findById(idDepa);
 	        if (o.isPresent()) {
 	        	Departamento depaC = depaClient.crearDepartamento(depa);
 
@@ -241,8 +231,8 @@ public class MedicoServiceImp implements MedicoService {
 
 	@Override
 	 @Transactional
-	public Optional<Departamento> eliminarDepartamento(Departamento depa, Long idMedico) {
-		  Optional<Medico> o = medicoRep.findById(idMedico);
+	public Optional<Departamento> eliminarDepartamento(Departamento depa, Long idDepa) {
+		  Optional<Medico> o = medicoRep.findById(idDepa);
 	        if (o.isPresent()) {
 	        	Departamento depaC = depaClient.detalleDepaMedicos(depa.getIdDepartamento());
 

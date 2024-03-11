@@ -223,46 +223,50 @@ public class MedicoController {
 	
 	/// Comunicación entre medico y departamento
 
-	@PostMapping("/asigdepa/{idMedico}")
-	public ResponseEntity<?> asignarDepartamento(Departamento depa, Long idMedico) {
-		Optional<Departamento> o;
-		try {
-			o = medicoServ.crearDepartamento(depa, idMedico);
-		} catch (FeignException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-					"No se pudo asignar el departamento al medico " + "o error en la comunicacion: " + e.getMessage()));
-		}
-		if (o.isPresent()) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
-		}
-		return ResponseEntity.notFound().build();
-
+	@PatchMapping("/asigdepa/{idDepa}")
+	public ResponseEntity<?> asignarDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
+	    // Use @RequestBody to bind the request body to the Departamento object
+	    Optional<Departamento> o;
+	    try {
+	        o = medicoServ.asignarDepartamento(depa, idDepa);
+	    } catch (FeignException e) {
+	        if (e.status() == 404) {
+	            // Adjust the status code and error message according to your requirements
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
+	                    "No se pudo asignar el departamento al medico o error en la comunicacion: " + e.getMessage()));
+	        }
+	        throw e; // Rethrow the exception for other status codes
+	    }
+	    if (o.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+	    }
+	    return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping("/creardepa/{idMedico}")
-	public ResponseEntity<?> crearDepartamento(Departamento depa, Long idMedico) {
-		Optional<Departamento> o;
-		try {
-			o = medicoServ.crearDepartamento(depa, idMedico);
-		} catch (FeignException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-					"No se pudo crear el departamento " + "o error en la comunicacion: " + e.getMessage()));
-		}
-		if (o.isPresent()) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
-		}
-		return ResponseEntity.notFound().build();
-
+	@PostMapping("/creardepa/{idDepa}")
+	public ResponseEntity<?> crearDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
+	    Optional<Departamento> o;
+	    try {
+	        o = medicoServ.crearDepartamento(depa, idDepa);
+	    } catch (FeignException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
+	                "No se pudo crear el departamento o error en la comunicacion: " + e.getMessage()));
+	    }
+	    if (o.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+	    }
+	    return ResponseEntity.notFound().build();
 	}
 
-	@DeleteMapping("/eliminardepa/{idMedico}")
-	public ResponseEntity<?> eliminarDepartamento(Departamento depa, Long idMedico) {
+
+	@DeleteMapping("/eliminardepa/{idDepa}")
+	public ResponseEntity<?> eliminarDepartamento(Departamento depa, @PathVariable Long idDepa) {
 		Optional<Departamento> o;
 		try {
-			o = medicoServ.eliminarDepartamento(depa, idMedico);
+			o = medicoServ.eliminarDepartamento(depa, idDepa);
 		} catch (FeignException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-					"No existe el departamento por " + "el id o error en la comunicacion: " + e.getMessage()));
+					"No existe el departamento por id" + idDepa+"o error en la comunicacion: " + e.getMessage()));
 		}
 		if (o.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(o.get());

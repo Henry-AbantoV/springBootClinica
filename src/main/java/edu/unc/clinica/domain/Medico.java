@@ -70,8 +70,14 @@ public class Medico {
 	
 	////comunicacion con otro microservicio
 	
+	
 	@Transient
 	private List<Departamento> departamentos;
+	
+	public Medico() {
+		departamentos=new ArrayList<Departamento>();
+	}
+	
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "curso_id")

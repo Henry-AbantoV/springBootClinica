@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Data
 @Table(name="Medico-departamento")
 public class MedicoDepartamento {
 
