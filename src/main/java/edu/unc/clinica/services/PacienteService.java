@@ -95,4 +95,6 @@ public interface PacienteService {
    	 */
     List<Factura> obtenerFacturas(Long idPaciente, Long idCita) throws EntityNotFoundException,IllegalOperationException;;
     
+	List<Cita> obtenerCitasPaciente(Long idPaciente) throws EntityNotFoundException, IllegalOperationException;
+	
 }

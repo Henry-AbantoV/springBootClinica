@@ -64,4 +64,6 @@ public interface HistorialService {
       * @throws IllegalOperationException Si se produce una operación ilegal durante la asignación del historial médico.
       */
 	HistorialMedico asignarHistorial(Long idHistorial,Long idPaciente) throws EntityNotFoundException, IllegalOperationException;
+	
+	
 }

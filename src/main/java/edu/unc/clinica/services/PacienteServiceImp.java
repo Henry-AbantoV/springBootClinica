@@ -69,6 +69,18 @@ public class PacienteServiceImp implements PacienteService {
 	@Override
 	@Transactional
 	public Paciente grabarPaciente(Paciente paciente) throws IllegalOperationException {
+
+		// AGREGADO
+		if (!pacientR.findBydni(paciente.getDni()).isEmpty()) {
+			throw new IllegalOperationException("El DNI del Paciente ya está registrado.");
+		} else if (!pacientR.findByCorreoElectronico(paciente.getCorreoElectronico()).isEmpty()) {
+			throw new IllegalOperationException("El Correo del Paciente ya está registrado.");
+		} else if (!pacientR.findByDireccion(paciente.getDireccion()).isEmpty()) {
+			throw new IllegalOperationException("La Direccion del Paciente ya está registrado.");
+		} else if (!pacientR.findByTelefono(paciente.getTelefono()).isEmpty()) {
+			throw new IllegalOperationException("El Telefono del Paciente ya está registrado.");
+		}
+		// AGREGADO
 		return pacientR.save(paciente);
 	}
 
@@ -90,6 +102,18 @@ public class PacienteServiceImp implements PacienteService {
 		if (pacEntity.isEmpty())
 			throw new EntityNotFoundException("El paciente con el ID proporcionado no fue encontrado");
 
+		if (!pacientR.findBydni(paciente.getDni()).isEmpty()) {
+			throw new IllegalOperationException("El DNI del Paciente ya está registrado.");
+		}
+		if (!pacientR.findByCorreoElectronico(paciente.getCorreoElectronico()).isEmpty()) {
+			throw new IllegalOperationException("El Correo del Paciente ya está registrado.");
+		}
+		if (!pacientR.findByDireccion(paciente.getDireccion()).isEmpty()) {
+			throw new IllegalOperationException("La Direccion del Paciente ya está registrado.");
+		}
+		if (!pacientR.findByTelefono(paciente.getTelefono()).isEmpty()) {
+			throw new IllegalOperationException("El Telefono del Paciente ya está registrado.");
+		}
 		paciente.setIdPaciente(id);
 		return pacientR.save(paciente);
 	}
@@ -144,11 +168,13 @@ public class PacienteServiceImp implements PacienteService {
 	}
 
 	@Override
-	public List<Cita> obtenerCitas(Long idPaciente) throws EntityNotFoundException {
-		Paciente paciente = pacientR.findById(idPaciente).orElseThrow();
+	public List<Cita> obtenerCitasPaciente(Long idPaciente) throws EntityNotFoundException, IllegalOperationException {
+		// TODO Auto-generated method stub
+		Paciente paciente = pacientR.findById(idPaciente).orElseThrow(
+				() -> new EntityNotFoundException("El paciente con el ID proporcionado no fue encontrado"));
 		return paciente.getCitas();
 	}
-
+	
 	/**
 	 * Obtiene una reserva especifica asociada a un cliente.
 	 *
@@ -163,15 +189,29 @@ public class PacienteServiceImp implements PacienteService {
 	@Override
 	public Cita obtenerCitaPorId(Long idPaciente, Long idCita)
 			throws EntityNotFoundException, IllegalOperationException {
-		Paciente paciente = pacientR.findById(idPaciente).orElseThrow();
-		Cita cita = citaR.findById(idCita).orElseThrow();
-		List<Cita> reservasCliente = paciente.getCitas();
-		if (reservasCliente.contains(cita)) {
-			return cita;
+		// TODO Auto-generated method stub
+		Paciente pacienteEntity = pacientR.findById(idPaciente).orElseThrow(
+				() -> new EntityNotFoundException("El paciente con el ID proporcionado no fue encontrado"));
+		Cita citaEntity = citaR.findById(idCita)
+				.orElseThrow(() -> new EntityNotFoundException("La cita con el ID proporcionado no fue encontrado"));
+
+		List<Cita> citaPaciente = pacienteEntity.getCitas();
+
+		if (citaPaciente.contains(citaEntity)) {
+			return citaEntity;
+
 		} else {
-			throw new IllegalOperationException("La reserva no fue realizada por el cliente");
+			throw new IllegalOperationException("La cita no fue realizada por el paciente");
 		}
 	}
+
+	@Override
+	public List<Cita> obtenerCitas(Long idPaciente) throws EntityNotFoundException {
+		Paciente paciente = pacientR.findById(idPaciente).orElseThrow();
+		return paciente.getCitas();
+	}
+
+
 
 	@Override
 	public List<Factura> obtenerFacturas(Long idPaciente, Long idCita)
