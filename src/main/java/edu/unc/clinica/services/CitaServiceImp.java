@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Factura;
+import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.ErrorMessage;
 import edu.unc.clinica.exceptions.IllegalOperationException;
@@ -136,5 +137,4 @@ public class CitaServiceImp implements CitaService {
 	    }
 		
 	}
-	
 }

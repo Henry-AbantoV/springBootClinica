@@ -2,6 +2,7 @@ package edu.unc.clinica.services;
 
 import java.util.List;
 import edu.unc.clinica.domain.Cita;
+import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
 
@@ -66,6 +67,5 @@ public interface CitaService {
      * @throws IllegalOperationException Si la operación no es válida.
      */
 	Cita asignarFactura(Long IdCita, Long IdFactura) throws EntityNotFoundException, IllegalOperationException;
-	
 	
 }

@@ -58,6 +58,7 @@ public class CitaController {
  	 *
  	 * @return the response entity
  	 */
+
 	@GetMapping
     public ResponseEntity<?> obtenerTodasCitas() {	     
             List<Cita> citas = citaS.listarCitas();
@@ -74,6 +75,7 @@ public class CitaController {
            modelo.add(linkTo(methodOn(CitaController.class).obtenerTodasCitas()).withSelfRel());
             return new ResponseEntity<>(citas, HttpStatus.OK);
 	}
+
 	    
 	    /**
 	     * Maneja las solicitudes GET para obtener una factura por su ID.
@@ -83,7 +85,6 @@ public class CitaController {
 	     */
 	   
 	    @GetMapping("/{id}")
-
 	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {
 	      
 	            Cita citas = citaS.buscarCitabyId(id);	            
