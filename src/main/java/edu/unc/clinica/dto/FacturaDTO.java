@@ -10,6 +10,8 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Paciente;
 import jakarta.persistence.GeneratedValue;
@@ -74,7 +76,8 @@ public class FacturaDTO {
     /**
      * Lista de citas asociadas a la factura.
      */
-	private List<Cita> citas=new ArrayList<>();
+	@JsonIgnore
+	 private List<Cita> citas=new ArrayList<>();
 	
 	/**
      * Lista de pacientes asociados a la factura.

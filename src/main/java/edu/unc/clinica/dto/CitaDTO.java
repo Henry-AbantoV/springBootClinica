@@ -14,6 +14,7 @@ import javax.validation.constraints.PastOrPresent;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.unc.clinica.domain.Cita;
