@@ -72,13 +72,7 @@ public class PacienteController {
 		List<Paciente> pacientes = pacienteS.listarPacientes();
 		if (pacientes == null || pacientes.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} 
-		/*else {
-			List<PacienteDTO> pacienteDto = pacientes.stream()
-					.map(paciente -> modelMapper.map(paciente, PacienteDTO.class)).collect(Collectors.toList());
-			ApiResponse<List<PacienteDTO>> response = new ApiResponse<>(true, "Lista de pacientes", pacienteDto);
-			return ResponseEntity.ok(response);
-		}*/
+		} 	
 		
 		for(Paciente paciente:pacientes) {
         	paciente.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(paciente.getIdPaciente())).withSelfRel());
@@ -176,13 +170,7 @@ public class PacienteController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
-	}
-	
-	
-	
-	
-	
-	
+	}	
 	 
 	  /**
      * Endpoint para actualizar la información de un paciente existente.

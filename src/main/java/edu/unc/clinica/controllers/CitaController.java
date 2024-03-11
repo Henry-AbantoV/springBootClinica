@@ -16,11 +16,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,11 +86,10 @@ public class CitaController {
 
 	    public ResponseEntity<?> obtenerCitasPorId(@PathVariable Long id) throws EntityNotFoundException {
 	      
-	            Cita citas = citaS.buscarCitabyId(id);
-	            
+	            Cita citas = citaS.buscarCitabyId(id);	            
 	            CitaDTO citaDto=modelMapper.map(citas, CitaDTO.class);
-	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Lista de facturas",citaDto);
-	            
+	            ApiResponse<CitaDTO> response=new ApiResponse<>(true, "Lista de citas",citaDto);
+	            citas.add(linkTo(methodOn(CitaController.class).obtenerCitasPorId(citas.getIdCita())).withSelfRel());
 	           /* Link link=linkTo(CitaController.class).slash(citas.getIdCita()).withSelfRel();
 	            citas.add(link);*/
 	            
@@ -172,7 +169,12 @@ public class CitaController {
 	    
 	    }
 	    
-	    
+	    /**
+	     * Busca una cita por su identificador único.
+	     * @param IdCita El identificador único de la cita a buscar.
+	     * @return La cita encontrada.
+	     * @throws EntityNotFoundException Si la cita con el ID proporcionado no se encuentra.
+	     */
 	    public Cita buscarCitabyId(Long IdCita) throws EntityNotFoundException  {
 			Optional<Cita> cita=citaR.findById(IdCita);
 			if(cita.isEmpty()) {

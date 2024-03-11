@@ -9,7 +9,4 @@ import edu.unc.clinica.domain.Cita;
 
 
 public interface CitaRepository extends JpaRepository<Cita, Long> {
-	
-	
-
 }

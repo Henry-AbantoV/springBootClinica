@@ -21,23 +21,36 @@ import edu.unc.clinica.repositories.MedicoRepository;
 import edu.unc.clinica.repositories.PacienteRepository;
 import jakarta.persistence.PersistenceException;
 
+/**
+ * Implementación de {@link MedicoService} que proporciona métodos para gestionar la entidad Medico.
+ */
 @Service
 public class MedicoServiceImp implements MedicoService {
-
 	
 	@Autowired
 	private MedicoRepository medicoRep;
-
-
+	
 	@Autowired
 	private PacienteRepository pacienteRep;
 
+	/**
+	 * Obtiene una lista de todos los médicos.
+	 *
+	 * @return Lista de médicos.
+	 */
 	@Override
 	@Transactional
 	public List<Medico> listarMedicos() {
 		return medicoRep.findAll();
 	}
 
+	/**
+	 * Busca un médico por su ID.
+	 *
+	 * @param idMedico El ID del médico a buscar.
+	 * @return El médico encontrado.
+	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Medico buscarMedicoById(Long idMedico) throws EntityNotFoundException {
@@ -50,6 +63,13 @@ public class MedicoServiceImp implements MedicoService {
 
 	}
 
+	/**
+	 * Guarda un nuevo médico en la base de datos.
+	 *
+	 * @param medico El médico a guardar.
+	 * @return El médico guardado.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 */
 	@Override
 	@Transactional
 	public Medico grabarMedico(Medico medico) throws IllegalOperationException {
@@ -57,6 +77,15 @@ public class MedicoServiceImp implements MedicoService {
 		return medicoRep.save(medico);
 	}
 
+	/**
+	 * Actualiza un médico existente en la base de datos.
+	 *
+	 * @param id El ID del médico a actualizar.
+	 * @param medico El médico actualizado.
+	 * @return El médico actualizado.
+	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 */
 	@Override
 	@Transactional
 	public Medico actualizarMedico(Long id, Medico medico) throws EntityNotFoundException, IllegalOperationException {
@@ -69,6 +98,13 @@ public class MedicoServiceImp implements MedicoService {
 
 	}
 
+	/**
+	 * Elimina un médico de la base de datos.
+	 *
+	 * @param IdMedico El ID del médico a eliminar.
+	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 */
 	@Override
 	@Transactional
 	public void eliminarMedico(Long IdMedico) throws EntityNotFoundException, IllegalOperationException {
@@ -79,6 +115,15 @@ public class MedicoServiceImp implements MedicoService {
 		medicoRep.deleteById(IdMedico);
 	}
 
+	/**
+	 * Asigna un paciente a un médico.
+	 *
+	 * @param idMedico El ID del médico al que se asignará el paciente.
+	 * @param idPaciente El ID del paciente que se asignará al médico.
+	 * @return El médico actualizado con el paciente asignado.
+	 * @throws EntityNotFoundException Si no se encuentra el médico o el paciente con los ID proporcionados.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 */
 	@Override
 	@Transactional
 	public Medico asignarPaciente(Long idMedico, Long idPaciente)
@@ -103,6 +148,15 @@ public class MedicoServiceImp implements MedicoService {
 		    }
 	}
 	
+	/**
+	 * Asigna un médico como jefe de otro médico.
+	 *
+	 * @param idMedico El ID del médico al que se asignará un jefe.
+	 * @param IdMedJefe El ID del médico que será el jefe.
+	 * @return El médico actualizado con el jefe asignado.
+	 * @throws EntityNotFoundException Si no se encuentra el médico o el jefe con los ID proporcionados.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 */	
 	@Override
 	@Transactional
 	public Medico asignarJefe(Long idMedico, Long IdMedJefe) throws EntityNotFoundException, IllegalOperationException{
@@ -120,5 +174,4 @@ public class MedicoServiceImp implements MedicoService {
 	        medico.setJefe(jefe);
 	        return medicoRep.save(medico);
 	}
-
 }
