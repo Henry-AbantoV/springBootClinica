@@ -1,9 +1,4 @@
 
-/*
-* @Autor Fernando C.J. (c)2024
- * @Created 5 mar. 2024,00:39:05
- */
-
 package edu.unc.clinica.domain;
 
 import java.util.ArrayList;

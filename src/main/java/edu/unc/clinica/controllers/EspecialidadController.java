@@ -1,7 +1,7 @@
 /*
  * @file EspecialidadController.java;
  * @Autor Fernando C.J. (c)2024
- * @Created 5 mar. 2024,01:43:26
+ * @Created 12 mar. 2024,01:50:41
  */
 
 package edu.unc.clinica.controllers;
@@ -45,8 +45,9 @@ import edu.unc.clinica.util.ApiResponse;
 
 // TODO: Auto-generated Javadoc
 /**
- * Controlador REST para las operaciones relacionadas con las especialidades médicas.
- * Esta clase maneja las solicitudes HTTP para obtener, crear, actualizar y eliminar especialidades médicas.
+ * Controlador REST para las operaciones relacionadas con las especialidades
+ * médicas. Esta clase maneja las solicitudes HTTP para obtener, crear,
+ * actualizar y eliminar especialidades médicas.
  */
 @RestController
 @RequestMapping(value = "api/especialidades", headers = "Api-Version=1")
@@ -61,55 +62,62 @@ public class EspecialidadController {
 	private ModelMapper modelMapper;
 
 	/**
-     * Obtiene todas las especialidades médicas.
-     * 
-     * @return ResponseEntity con la lista de todas las especialidades o un estado sin contenido si no hay ninguna.
-     */
+	 * Obtiene todas las especialidades médicas.
+	 * 
+	 * @return ResponseEntity con la lista de todas las especialidades o un estado
+	 *         sin contenido si no hay ninguna.
+	 */
 	@GetMapping
 	public ResponseEntity<?> obtenerTodasEspecialidades() {
 
 		List<Especialidad> especialidad = especS.listarEspecialidades();
 		if (especialidad == null || especialidad.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		}  
-		for(Especialidad especial:especialidad) {
-        	especial.add(linkTo(methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especial.getIdEspecialidad())).withSelfRel());
-            especial.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withRel(IanaLinkRelations.COLLECTION));
-        }
-        CollectionModel<Especialidad> modelo = CollectionModel.of(especialidad);
-        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
-        return new ResponseEntity<>(especialidad, HttpStatus.OK);
+		}
+		for (Especialidad especial : especialidad) {
+			especial.add(linkTo(
+					methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especial.getIdEspecialidad()))
+					.withSelfRel());
+			especial.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades())
+					.withRel(IanaLinkRelations.COLLECTION));
+		}
+		CollectionModel<Especialidad> modelo = CollectionModel.of(especialidad);
+		modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+		return new ResponseEntity<>(especialidad, HttpStatus.OK);
 	}
-	
-	
+
 	/**
-     * Obtiene una especialidad médica por su ID.
-     * 
-     * @param id El ID de la especialidad médica a buscar.
-     * @return ResponseEntity con la especialidad médica encontrada.
-     * @throws EntityNotFoundException Si la especialidad médica no se encuentra en la base de datos.
-     */
+	 * Obtiene una especialidad médica por su ID.
+	 * 
+	 * @param id El ID de la especialidad médica a buscar.
+	 * @return ResponseEntity con la especialidad médica encontrada.
+	 * @throws EntityNotFoundException Si la especialidad médica no se encuentra en
+	 *                                 la base de datos.
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<?> obtenerEspecialidadPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		Especialidad especialidad = especS.buscarEspecialidadbyId(id);
 		EspecialidadDTO especialidadDto = modelMapper.map(especialidad, EspecialidadDTO.class);
 		EntityModel<EspecialidadDTO> resource = EntityModel.of(especialidadDto);
-        especialidad.add(linkTo(methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especialidad.getIdEspecialidad())).withSelfRel());
-		//ApiResponse<EspecialidadDTO> response = new ApiResponse<>(true, "Lista de Especialidades", especialidadDto);
-         return new ResponseEntity<>(especialidad, HttpStatus.OK);
-         //return ResponseEntity.ok(response);
+		especialidad.add(linkTo(
+				methodOn(EspecialidadController.class).obtenerEspecialidadPorId(especialidad.getIdEspecialidad()))
+				.withSelfRel());
+		// ApiResponse<EspecialidadDTO> response = new ApiResponse<>(true, "Lista de
+		// Especialidades", especialidadDto);
+		return new ResponseEntity<>(especialidad, HttpStatus.OK);
+		// return ResponseEntity.ok(response);
 	}
-	
-	
+
 	/**
-     * Guarda una nueva especialidad médica.
-     * 
-     * @param especDto La especialidad médica a guardar.
-     * @param result   El resultado de la validación de la especialidad médica.
-     * @return ResponseEntity con la especialidad médica guardada.
-     * @throws IllegalOperationException Si se produce un error durante la operación de guardado.
-     */
+	 * Guarda una nueva especialidad médica.
+	 * 
+	 * @param especDto La especialidad médica a guardar.
+	 * @param result   El resultado de la validación de la especialidad médica.
+	 * @return ResponseEntity con la especialidad médica guardada.
+	 * @throws IllegalOperationException Si se produce un error durante la operación
+	 *                                   de guardado.
+	 */
 	@PostMapping
 	public ResponseEntity<?> guardarEspecialidad(@Valid @RequestBody EspecialidadDTO especDto, BindingResult result)
 			throws IllegalOperationException {
@@ -125,20 +133,23 @@ public class EspecialidadController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	
 	/**
-     * Actualiza una especialidad médica existente por su ID.
-     * 
-     * @param espDto  La especialidad médica con los datos actualizados.
-     * @param result  El resultado de la validación de la especialidad médica actualizada.
-     * @param id      El ID de la especialidad médica a actualizar.
-     * @return ResponseEntity con la especialidad médica actualizada.
-     * @throws EntityNotFoundException   Si la especialidad médica no se encuentra en la base de datos.
-     * @throws IllegalOperationException Si se produce un error durante la operación de actualización.
-     */
+	 * Actualiza una especialidad médica existente por su ID.
+	 * 
+	 * @param espDto La especialidad médica con los datos actualizados.
+	 * @param result El resultado de la validación de la especialidad médica
+	 *               actualizada.
+	 * @param id     El ID de la especialidad médica a actualizar.
+	 * @return ResponseEntity con la especialidad médica actualizada.
+	 * @throws EntityNotFoundException   Si la especialidad médica no se encuentra
+	 *                                   en la base de datos.
+	 * @throws IllegalOperationException Si se produce un error durante la operación
+	 *                                   de actualización.
+	 */
 	@PutMapping("/{id}")
-	public ResponseEntity<ApiResponse<EspecialidadDTO>> actualizarEspecialidad(@Valid @RequestBody EspecialidadDTO espDto,
-			BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException {
+	public ResponseEntity<ApiResponse<EspecialidadDTO>> actualizarEspecialidad(
+			@Valid @RequestBody EspecialidadDTO espDto, BindingResult result, @PathVariable Long id)
+			throws EntityNotFoundException, IllegalOperationException {
 
 		Especialidad espActualizada = modelMapper.map(espDto, Especialidad.class);
 		especS.actualizarEspecilidad(id, espActualizada);
@@ -147,16 +158,17 @@ public class EspecialidadController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	
+
 	/**
-     * Elimina una especialidad médica por su ID.
-     * 
-     * @param id El ID de la especialidad médica a eliminar.
-     * @return ResponseEntity con un mensaje de éxito.
-     * @throws EntityNotFoundException   Si la especialidad médica no se encuentra en la base de datos.
-     * @throws IllegalOperationException Si se produce un error durante la operación de eliminación.
-     */
+	 * Elimina una especialidad médica por su ID.
+	 * 
+	 * @param id El ID de la especialidad médica a eliminar.
+	 * @return ResponseEntity con un mensaje de éxito.
+	 * @throws EntityNotFoundException   Si la especialidad médica no se encuentra
+	 *                                   en la base de datos.
+	 * @throws IllegalOperationException Si se produce un error durante la operación
+	 *                                   de eliminación.
+	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminarEspecialidad(@PathVariable Long id)
 			throws EntityNotFoundException, IllegalOperationException {
@@ -166,31 +178,33 @@ public class EspecialidadController {
 	}
 
 	/**
-     * Asigna médicos a una especialidad médica por su ID.
-     * 
-     * @param IdEsp   El ID de la especialidad médica.
-     * @param IdMedic El ID del médico a asignar a la especialidad.
-     * @return ResponseEntity con la especialidad médica actualizada.
-     * @throws EntityNotFoundException   Si la especialidad médica o el médico no se encuentran en la base de datos.
-     * @throws IllegalOperationException Si se produce un error durante la operación de asignación de médicos.
-     */
+	 * Asigna médicos a una especialidad médica por su ID.
+	 * 
+	 * @param IdEsp   El ID de la especialidad médica.
+	 * @param IdMedic El ID del médico a asignar a la especialidad.
+	 * @return ResponseEntity con la especialidad médica actualizada.
+	 * @throws EntityNotFoundException   Si la especialidad médica o el médico no se
+	 *                                   encuentran en la base de datos.
+	 * @throws IllegalOperationException Si se produce un error durante la operación
+	 *                                   de asignación de médicos.
+	 */
 	@PatchMapping("/{IdEsp}/asignarMedicos/{IdMedic}")
-	public ResponseEntity<?> asignarMedicos( @PathVariable Long IdEsp,
-			@PathVariable Long IdMedic) throws EntityNotFoundException, IllegalOperationException {		
+	public ResponseEntity<?> asignarMedicos(@PathVariable Long IdEsp, @PathVariable Long IdMedic)
+			throws EntityNotFoundException, IllegalOperationException {
 		Especialidad especialidad = especS.asignarMedicos(IdEsp, IdMedic);
-		
+
 		ApiResponse<?> response = new ApiResponse<>(true, "Especialidad asignada correctamente", null);
-		//return ResponseEntity.ok(especialidad);
+		// return ResponseEntity.ok(especialidad);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	
-	 /**
-     * Valida los resultados de la validación y devuelve un ResponseEntity con los errores en caso de que haya alguno.
-     * 
-     * @param result El resultado de la validación.
-     * @return ResponseEntity que contiene un mapa de errores.
-     */
+
+	/**
+	 * Valida los resultados de la validación y devuelve un ResponseEntity con los
+	 * errores en caso de que haya alguno.
+	 * 
+	 * @param result El resultado de la validación.
+	 * @return ResponseEntity que contiene un mapa de errores.
+	 */
 	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 		Map<String, String> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {

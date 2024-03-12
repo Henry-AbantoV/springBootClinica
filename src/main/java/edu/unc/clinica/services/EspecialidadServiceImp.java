@@ -1,8 +1,4 @@
-/*
- * @file EspecialidadServiceImp.java;
- * @Autor Fernando C.J. (c)2024
- * @Created 5 mar. 2024,01:34:16
- */
+
 package edu.unc.clinica.services;
 
 import java.util.List;

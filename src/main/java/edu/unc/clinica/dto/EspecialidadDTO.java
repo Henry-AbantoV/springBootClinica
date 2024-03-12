@@ -1,8 +1,4 @@
-/*
- * @file EspecialidadDTO.java;
- * @Autor Fernando C.J. (c)2024
- * @Created 5 mar. 2024,01:38:32
- */
+
 package edu.unc.clinica.dto;
 
 import java.util.ArrayList;
