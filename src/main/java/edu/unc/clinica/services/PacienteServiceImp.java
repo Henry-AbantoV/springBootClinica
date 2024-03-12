@@ -174,7 +174,7 @@ public class PacienteServiceImp implements PacienteService {
 				() -> new EntityNotFoundException("El paciente con el ID proporcionado no fue encontrado"));
 		return paciente.getCitas();
 	}
-	
+
 	/**
 	 * Obtiene una reserva especifica asociada a un cliente.
 	 *
@@ -205,21 +205,34 @@ public class PacienteServiceImp implements PacienteService {
 		}
 	}
 
+	/**
+	 * Obtiene todas las citas de un paciente por su ID.
+	 *
+	 * @param idPaciente El ID del paciente para el cual se obtienen las citas.
+	 * @return Lista de objetos Cita correspondiente al paciente.
+	 * @throws EntityNotFoundException Si el paciente no se encuentra en la base de
+	 *                                 datos.
+	 */
 	@Override
 	public List<Cita> obtenerCitas(Long idPaciente) throws EntityNotFoundException {
 		Paciente paciente = pacientR.findById(idPaciente).orElseThrow();
 		return paciente.getCitas();
 	}
-
-
-
+	
+	/**
+	 * Obtiene las facturas asociadas a una cita de un paciente.
+	 *
+	 * @param idPaciente El ID del paciente.
+	 * @param idCita     El ID de la cita.
+	 * @return Lista de objetos Factura asociada a la cita y paciente.
+	 * @throws EntityNotFoundException     Si el paciente o la cita no se encuentran en la base de datos.
+	 * @throws IllegalOperationException   Si la cita no pertenece al paciente o si la cita no tiene factura.
+	 */
 	@Override
 	public List<Factura> obtenerFacturas(Long idPaciente, Long idCita)
 			throws EntityNotFoundException, IllegalOperationException {
-		Paciente paciente = pacientR.findById(idPaciente)
-				.orElseThrow();
-		Cita cita = citaR.findById(idCita)
-				.orElseThrow();
+		Paciente paciente = pacientR.findById(idPaciente).orElseThrow();
+		Cita cita = citaR.findById(idCita).orElseThrow();
 		List<Cita> citasPaciente = paciente.getCitas();
 		List<Factura> facturas = new ArrayList<>();
 

@@ -31,26 +31,26 @@ import lombok.Data;
 //Declaración de la clase CitaDTO
 @Data
 public class CitaDTO {
-	 
- 	// Campo para almacenar el identificador único de la cita
-	 @Id
-	 @GeneratedValue(strategy = GenerationType.IDENTITY)  
+
+	// Campo para almacenar el identificador único de la cita
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idCita;
-	
+
 	// Campo para almacenar la fecha y hora de la cita
 	@Temporal(TemporalType.DATE)
-    @PastOrPresent(message = "La fecha debe ser anterior al dia de hoy")
-    @Past(message = "La fecha de inscripción debe ser en el pasado")
-    private Date fechaHoraCita;
-    
-    // Campo para almacenar el motivo o razón de la cita
+	@PastOrPresent(message = "La fecha debe ser anterior al dia de hoy")
+	@Past(message = "La fecha de inscripción debe ser en el pasado")
+	private Date fechaHoraCita;
+
+	// Campo para almacenar el motivo o razón de la cita
 	@NotBlank(message = "El motivo no puede estar vacío.")
-    private String motivoCita;
-    
-    // Campo para almacenar el estado actual de la cita
+	private String motivoCita;
+
+	// Campo para almacenar el estado actual de la cita
 	@NotBlank(message = "El estado de la cita no puede estar vacío.")
-    private String estadoCita;
-    
-    // Campo para almacenar la factura asociada a la cita
+	private String estadoCita;
+
+	// Campo para almacenar la factura asociada a la cita
 	private Factura factura;
 }

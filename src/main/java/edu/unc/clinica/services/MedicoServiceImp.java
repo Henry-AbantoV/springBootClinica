@@ -26,11 +26,11 @@ import edu.unc.clinica.repositories.PacienteRepository;
 import jakarta.persistence.PersistenceException;
 
 /**
- * Implementación de {@link MedicoService} que proporciona métodos para gestionar la entidad Medico.
+ * Implementación de {@link MedicoService} que proporciona métodos para
+ * gestionar la entidad Medico.
  */
 @Service
 public class MedicoServiceImp implements MedicoService {
-
 
 	@Autowired
 	private MedicoRepository medicoRep;
@@ -40,7 +40,6 @@ public class MedicoServiceImp implements MedicoService {
 
 	@Autowired
 	private DepaClientRest depaClient;
-	
 
 	/**
 	 * Obtiene una lista de todos los médicos.
@@ -59,7 +58,8 @@ public class MedicoServiceImp implements MedicoService {
 	 *
 	 * @param idMedico El ID del médico a buscar.
 	 * @return El médico encontrado.
-	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
+	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID
+	 *                                 proporcionado.
 	 */
 	@Override
 	@Transactional(readOnly = true)
@@ -77,7 +77,8 @@ public class MedicoServiceImp implements MedicoService {
 	 *
 	 * @param medico El médico a guardar.
 	 * @return El médico guardado.
-	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación
+	 *                                   ilegal.
 	 */
 	@Override
 	@Transactional
@@ -89,11 +90,13 @@ public class MedicoServiceImp implements MedicoService {
 	/**
 	 * Actualiza un médico existente en la base de datos.
 	 *
-	 * @param id El ID del médico a actualizar.
+	 * @param id     El ID del médico a actualizar.
 	 * @param medico El médico actualizado.
 	 * @return El médico actualizado.
-	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
-	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 * @throws EntityNotFoundException   Si no se encuentra el médico con el ID
+	 *                                   proporcionado.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación
+	 *                                   ilegal.
 	 */
 	@Override
 	@Transactional
@@ -111,8 +114,10 @@ public class MedicoServiceImp implements MedicoService {
 	 * Elimina un médico de la base de datos.
 	 *
 	 * @param IdMedico El ID del médico a eliminar.
-	 * @throws EntityNotFoundException Si no se encuentra el médico con el ID proporcionado.
-	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 * @throws EntityNotFoundException   Si no se encuentra el médico con el ID
+	 *                                   proporcionado.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación
+	 *                                   ilegal.
 	 */
 	@Override
 	@Transactional
@@ -126,11 +131,13 @@ public class MedicoServiceImp implements MedicoService {
 	/**
 	 * Asigna un paciente a un médico.
 	 *
-	 * @param idMedico El ID del médico al que se asignará el paciente.
+	 * @param idMedico   El ID del médico al que se asignará el paciente.
 	 * @param idPaciente El ID del paciente que se asignará al médico.
 	 * @return El médico actualizado con el paciente asignado.
-	 * @throws EntityNotFoundException Si no se encuentra el médico o el paciente con los ID proporcionados.
-	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 * @throws EntityNotFoundException   Si no se encuentra el médico o el paciente
+	 *                                   con los ID proporcionados.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación
+	 *                                   ilegal.
 	 */
 	@Override
 	@Transactional
@@ -160,11 +167,13 @@ public class MedicoServiceImp implements MedicoService {
 	/**
 	 * Asigna un médico como jefe de otro médico.
 	 *
-	 * @param idMedico El ID del médico al que se asignará un jefe.
+	 * @param idMedico  El ID del médico al que se asignará un jefe.
 	 * @param IdMedJefe El ID del médico que será el jefe.
 	 * @return El médico actualizado con el jefe asignado.
-	 * @throws EntityNotFoundException Si no se encuentra el médico o el jefe con los ID proporcionados.
-	 * @throws IllegalOperationException Si ocurre un error durante la operación ilegal.
+	 * @throws EntityNotFoundException   Si no se encuentra el médico o el jefe con
+	 *                                   los ID proporcionados.
+	 * @throws IllegalOperationException Si ocurre un error durante la operación
+	 *                                   ilegal.
 	 */
 	@Override
 	@Transactional
@@ -204,47 +213,47 @@ public class MedicoServiceImp implements MedicoService {
 
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public void eliminarMedicoDepa(Long id) {
 		medicoRep.eliminarMedicoDepaPorId(id);
 	}
 
 	@Override
-	 @Transactional
+	@Transactional
 	public Optional<Departamento> crearDepartamento(Departamento depa, Long idDepa) {
-		  Optional<Medico> o = medicoRep.findById(idDepa);
-	        if (o.isPresent()) {
-	        	Departamento depaC = depaClient.crearDepartamento(depa);
+		Optional<Medico> o = medicoRep.findById(idDepa);
+		if (o.isPresent()) {
+			Departamento depaC = depaClient.crearDepartamento(depa);
 
-	        	Medico medico = o.get();
-	        	MedicoDepartamento medepa = new MedicoDepartamento();
-	        	medepa.setDepaId(depaC.getIdDepartamento());
+			Medico medico = o.get();
+			MedicoDepartamento medepa = new MedicoDepartamento();
+			medepa.setDepaId(depaC.getIdDepartamento());
 
-	        	medico.addmedicoDepa(medepa);
-				medicoRep.save(medico);
-				return Optional.of(depaC);
-	        }
+			medico.addmedicoDepa(medepa);
+			medicoRep.save(medico);
+			return Optional.of(depaC);
+		}
 
-	        return Optional.empty();
+		return Optional.empty();
 	}
 
 	@Override
-	 @Transactional
+	@Transactional
 	public Optional<Departamento> eliminarDepartamento(Departamento depa, Long idDepa) {
-		  Optional<Medico> o = medicoRep.findById(idDepa);
-	        if (o.isPresent()) {
-	        	Departamento depaC = depaClient.detalleDepaMedicos(depa.getIdDepartamento());
+		Optional<Medico> o = medicoRep.findById(idDepa);
+		if (o.isPresent()) {
+			Departamento depaC = depaClient.detalleDepaMedicos(depa.getIdDepartamento());
 
-	        	Medico medico = o.get();
-	        	MedicoDepartamento medepa = new MedicoDepartamento();
-	        	medepa.setDepaId(depaC.getIdDepartamento());
+			Medico medico = o.get();
+			MedicoDepartamento medepa = new MedicoDepartamento();
+			medepa.setDepaId(depaC.getIdDepartamento());
 
-	        	medico.removeMedicoDepa(medepa);
-				medicoRep.save(medico);
-				return Optional.of(depaC);
-	        }
+			medico.removeMedicoDepa(medepa);
+			medicoRep.save(medico);
+			return Optional.of(depaC);
+		}
 
-	        return Optional.empty();
+		return Optional.empty();
 	}
 }
