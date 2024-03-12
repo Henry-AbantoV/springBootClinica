@@ -1,3 +1,8 @@
+/*
+ * @file FacturaDTO.java;
+ * @Autor Henry AV (c)2024
+ * @Created 10 mar 2024,1:55:55
+ */
 package edu.unc.clinica.dto;
 
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
 
+// TODO: Auto-generated Javadoc
 /**
  * Clase que representa un DTO (Objeto de Transferencia de Datos) para una
  * factura. Contiene información sobre la factura, incluyendo su ID, fecha de

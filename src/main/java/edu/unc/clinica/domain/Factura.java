@@ -1,7 +1,7 @@
 /*
  * @file Factura.java;
  * @Autor Henry AV (c)2024
- * @Created 5 mar 2024,0:36:03
+ * @Created 5 mar 2024,2:36:03
  */
 package edu.unc.clinica.domain;
 
