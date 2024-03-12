@@ -10,6 +10,8 @@ import java.util.Date;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,6 +46,7 @@ public class Cita extends RepresentationModel<Cita>{
 
     // Factura asociada a la cita
     @ManyToOne
+    @JsonIgnoreProperties("citas")
     @JoinColumn(name="id_Factura")
    	private Factura factura;
    
