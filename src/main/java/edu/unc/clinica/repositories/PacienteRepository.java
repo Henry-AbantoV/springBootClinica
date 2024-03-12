@@ -1,3 +1,8 @@
+/*
+ * @file PacienteRepository.java;
+ * @Autor Daniela Torres (c)2024
+ * @Created 12 mar 2024,2:15:20
+ */
 package edu.unc.clinica.repositories;
 
 import java.util.List;
@@ -6,6 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import edu.unc.clinica.domain.Paciente;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface PacienteRepository.
+ */
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     /**
      * Busca pacientes por nombres.
