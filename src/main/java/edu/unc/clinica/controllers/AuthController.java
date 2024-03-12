@@ -1,3 +1,9 @@
+/*
+ * @file AuthController.java
+ * @Autor Yersson.C.D(c)2024
+ * @Created 12 mar 2024, 2:10:34
+ *  
+ */
 package edu.unc.clinica.controllers;
 
 import org.springframework.http.ResponseEntity;
@@ -13,6 +19,7 @@ import edu.unc.clinica.Auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Este controlador maneja las solicitudes relacionadas con la autenticación de usuarios en el sistema.
  * Proporciona endpoints para iniciar sesión y registrar nuevos usuarios.
