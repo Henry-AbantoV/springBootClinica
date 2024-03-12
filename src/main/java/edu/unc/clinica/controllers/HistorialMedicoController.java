@@ -1,8 +1,9 @@
 /*
  * @file HistorialMedicoController.java;
  * @Autor Henry AV (c)2024
- * @Created 5 mar 2024,0:04:26
+ * @Created 12 mar 2024,1:49:02
  */
+
 package edu.unc.clinica.controllers;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
