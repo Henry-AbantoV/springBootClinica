@@ -79,7 +79,7 @@ public class Medico {
 	}
 	
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany
     @JoinColumn(name = "curso_id")
 	private List<MedicoDepartamento> medicDep;
 	

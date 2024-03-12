@@ -9,6 +9,6 @@ import edu.unc.clinica.domain.Medico;
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
 	@Modifying
-	@Query("delete from MedicoDepartamento md where md.depaId=?1")
+	@Query("delete from Medico md where md.idMedico=?1")
 	void eliminarMedicoDepaPorId(Long id);
 }

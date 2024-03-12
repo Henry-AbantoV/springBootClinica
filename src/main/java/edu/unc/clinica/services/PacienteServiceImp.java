@@ -102,18 +102,6 @@ public class PacienteServiceImp implements PacienteService {
 		if (pacEntity.isEmpty())
 			throw new EntityNotFoundException("El paciente con el ID proporcionado no fue encontrado");
 
-		if (!pacientR.findBydni(paciente.getDni()).isEmpty()) {
-			throw new IllegalOperationException("El DNI del Paciente ya está registrado.");
-		}
-		if (!pacientR.findByCorreoElectronico(paciente.getCorreoElectronico()).isEmpty()) {
-			throw new IllegalOperationException("El Correo del Paciente ya está registrado.");
-		}
-		if (!pacientR.findByDireccion(paciente.getDireccion()).isEmpty()) {
-			throw new IllegalOperationException("La Direccion del Paciente ya está registrado.");
-		}
-		if (!pacientR.findByTelefono(paciente.getTelefono()).isEmpty()) {
-			throw new IllegalOperationException("El Telefono del Paciente ya está registrado.");
-		}
 		paciente.setIdPaciente(id);
 		return pacientR.save(paciente);
 	}

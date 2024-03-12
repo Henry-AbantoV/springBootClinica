@@ -223,7 +223,7 @@ public class MedicoController {
 	
 	/// Comunicación entre medico y departamento
 
-	@PatchMapping("/asigdepa/{idDepa}")
+	@PutMapping("/asigdepa/{idDepa}")
 	public ResponseEntity<?> asignarDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
 	    // Use @RequestBody to bind the request body to the Departamento object
 	    Optional<Departamento> o;
@@ -243,6 +243,9 @@ public class MedicoController {
 	    return ResponseEntity.notFound().build();
 	}
 
+	
+
+	
 	@PostMapping("/creardepa/{idDepa}")
 	public ResponseEntity<?> crearDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
 	    Optional<Departamento> o;
@@ -275,7 +278,7 @@ public class MedicoController {
 	}
 
 	@DeleteMapping("/eliminar-medico-depa/{id}")
-	public ResponseEntity<?> eliminarMedicoDepa(Long id) {
+	public ResponseEntity<?> eliminarMedicoDepa(@PathVariable Long id) {
 		medicoServ.eliminarMedicoDepa(id);
 		return ResponseEntity.noContent().build();
 	}
