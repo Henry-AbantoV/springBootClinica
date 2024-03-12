@@ -1,3 +1,8 @@
+/*
+ * @file PacienteDTO.java;
+ * @Autor Daniela Torres (c)2024
+ * @Created 12 mar 2024,2:07:37
+ */
 package edu.unc.clinica.dto;
 
 import java.util.ArrayList;
@@ -23,6 +28,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
 
+// TODO: Auto-generated Javadoc
 /**
  * Clase que representa un DTO (Objeto de Transferencia de Datos) para un
  * paciente. Contiene información sobre el paciente, incluyendo su ID, nombres,
