@@ -1,3 +1,9 @@
+/*
+ * @file SecurityConfig.java
+ * @Autor Yersson.C.D(c)2024
+ * @Created 12 mar 2024, 2:11:32
+ *  
+ */
 package edu.unc.clinica.configuration;
 
 import org.springframework.context.annotation.Bean;
@@ -12,15 +18,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import edu.unc.clinica.JWT.JwtAutenticationFilter;
 import lombok.RequiredArgsConstructor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SecurityConfig.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 //Contiene todos los filtros para la auth
 public class SecurityConfig {
 	
+	/** The jwt authentication filter. */
 	private final JwtAutenticationFilter jwtAuthenticationFilter;
+    
+    /** The auth provider. */
     private final AuthenticationProvider authProvider;
 
+    /**
+     * Security filter chain.
+     *
+     * @param http the http
+     * @return the security filter chain
+     * @throws Exception the exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
