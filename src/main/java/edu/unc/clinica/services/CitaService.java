@@ -1,3 +1,8 @@
+/*
+ * @file CitaService.java;
+ * @Autor Daniela Torres (c)2024
+ * @Created 12 mar 2024,2:16:39
+ */
 package edu.unc.clinica.services;
 
 import java.util.List;
@@ -6,6 +11,7 @@ import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
 
+// TODO: Auto-generated Javadoc
 /**
  * La interfaz CitaService define operaciones para gestionar las citas en el
  * sistema. Proporciona métodos para listar citas, buscar cita por ID, grabar
@@ -22,7 +28,7 @@ public interface CitaService {
 	/**
 	 * Busca una cita por su identificador único.
 	 *
-	 * @param idCita Identificador único de la cita.
+	 * @param IdCita the id cita
 	 * @return Cita correspondiente al ID proporcionado.
 	 * @throws EntityNotFoundException Si no se encuentra la cita con el ID
 	 *                                 especificado.
@@ -53,7 +59,7 @@ public interface CitaService {
 	/**
 	 * Elimina una cita del sistema por su identificador único.
 	 *
-	 * @param idCita Identificador único de la cita a ser eliminada.
+	 * @param IdCita the id cita
 	 * @throws EntityNotFoundException   Si no se encuentra la cita con el ID
 	 *                                   especificado.
 	 * @throws IllegalOperationException Si la operación no es válida.
@@ -63,8 +69,8 @@ public interface CitaService {
 	/**
 	 * Asigna una factura a una cita existente en el sistema.
 	 *
-	 * @param idCita    Identificador único de la cita.
-	 * @param idFactura Identificador único de la factura a ser asignada.
+	 * @param IdCita the id cita
+	 * @param IdFactura the id factura
 	 * @return Cita actualizada con la asignación de factura.
 	 * @throws EntityNotFoundException   Si no se encuentra la cita o la factura con
 	 *                                   los ID especificados.

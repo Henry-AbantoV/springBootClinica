@@ -1,3 +1,8 @@
+/*
+ * @file PacienteService.java;
+ * @Autor Daniela Torres (c)2024
+ * @Created 12 mar 2024,2:17:14
+ */
 package edu.unc.clinica.services;
 
 import java.util.List;
@@ -8,6 +13,7 @@ import edu.unc.clinica.domain.Paciente;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Interfaz que define los servicios relacionados con la entidad Paciente.
  */
@@ -22,8 +28,8 @@ public interface PacienteService {
 
 	/**
 	 * Busca un paciente específico por su identificador.
-	 * 
-	 * @param IdPaciente Identificador único del paciente a buscar.
+	 *
+	 * @param IdPacient the id pacient
 	 * @return Objeto {@link Paciente} encontrado.
 	 * @throws EntityNotFoundException Si el paciente no se encuentra.
 	 */
@@ -74,7 +80,7 @@ public interface PacienteService {
 	Paciente asignarCita(Long idPaciente, Long IdCita) throws EntityNotFoundException, IllegalOperationException;
 
 	/**
-	 * Obtiene la lista de citas asociadas a un paciente
+	 * Obtiene la lista de citas asociadas a un paciente.
 	 *
 	 * @param idPaciente El ID del paciente del cual se desean obtener las citas.
 	 * @return Una lista de citas asociadas al paciente.
@@ -86,8 +92,8 @@ public interface PacienteService {
 	/**
 	 * Obtiene una reserva especifica asociada a un cliente.
 	 *
-	 * @param idCliente El ID del cliente al que esta asociada la reserva.
-	 * @param idReserva El ID de la reserva que se desea obtener.
+	 * @param idPaciente the id paciente
+	 * @param idCita the id cita
 	 * @return La reserva especifica asociada al cliente.
 	 * @throws EntityNotFoundException   Si no se encuentra el cliente o la reserva
 	 *                                   con los IDs proporcionados.
