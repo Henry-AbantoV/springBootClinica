@@ -5,6 +5,9 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.domain.Medico;
 import edu.unc.clinica.dto.MedicoDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
@@ -55,12 +61,14 @@ public class MedicoController {
 
 		if (medicos == null || medicos.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
-			List<MedicoDTO> medicoDTO = medicos.stream().map(medico -> modelMapper.map(medico, MedicoDTO.class))
-					.collect(Collectors.toList());
-			ApiResponse<List<MedicoDTO>> response = new ApiResponse<>(true, "Lista de medicos", medicoDTO);
-			return ResponseEntity.ok(response);
-		}
+		}  
+		for(Medico medico:medicos) {
+        	medico.add(linkTo(methodOn(MedicoController.class).ObtenerMedicosPorId(medico.getIdMedico())).withSelfRel());
+            medico.add(linkTo(methodOn(MedicoController.class).obtenerMedicos()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<Medico> modelo = CollectionModel.of(medicos);
+        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+        return new ResponseEntity<>(medicos, HttpStatus.OK);
 	}
 	 /**
      * Obtiene los detalles de un médico específico por su ID.
@@ -73,9 +81,9 @@ public class MedicoController {
 	public ResponseEntity<?> ObtenerMedicosPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		Medico medico = medicoServ.buscarMedicoById(id);
-
 		MedicoDTO medicoDTO = modelMapper.map(medico, MedicoDTO.class);
 		ApiResponse<MedicoDTO> response = new ApiResponse<>(true, "Lista de medicos", medicoDTO);
+		medico.add(linkTo(methodOn(MedicoController.class).ObtenerMedicosPorId(medico.getIdMedico())).withSelfRel());
 		return ResponseEntity.ok(response);
 
 	}

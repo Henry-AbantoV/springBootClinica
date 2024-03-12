@@ -5,15 +5,19 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -61,13 +65,13 @@ public class FacturaController {
 	            if(facturas==null || facturas.isEmpty()) {
 	            	return ResponseEntity.noContent().build();
 	            }
-	            else {
-	            	List<FacturaDTO> facturaDto=facturas.stream()
-	            			.map(factura->modelMapper.map(factura, FacturaDTO.class))
-	            			.collect(Collectors.toList());
-	            	ApiResponse<List<FacturaDTO>> response=new ApiResponse<>(true, "Lista de facturas",facturaDto);
-	            	return ResponseEntity.ok(response);
-	            }   
+	            for(Factura factura:facturas) {
+	            	factura.add(linkTo(methodOn(FacturaController.class).obtenerFacturasPorId(factura.getIdFactura())).withSelfRel());
+	                factura.add(linkTo(methodOn(FacturaController.class).obtenerTodasFacturas()).withRel(IanaLinkRelations.COLLECTION));
+	            }
+	            CollectionModel<Factura> modelo = CollectionModel.of(facturas);
+	            modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+	            return new ResponseEntity<>(facturas, HttpStatus.OK);
 	    }
 	    
 	    /**
@@ -81,10 +85,10 @@ public class FacturaController {
 	    @GetMapping("/{id}")
 	    public ResponseEntity<?> obtenerFacturasPorId(@PathVariable Long id) throws EntityNotFoundException {
 	      
-	            Factura facturas = facturaS.buscarFacturabyId(id);
-	            
+	            Factura facturas = facturaS.buscarFacturabyId(id);	            
 	            FacturaDTO facturaDto=modelMapper.map(facturas, FacturaDTO.class);
 	            ApiResponse<FacturaDTO> response=new ApiResponse<>(true, "Lista de facturas",facturaDto);
+	            facturas.add(linkTo(methodOn(FacturaController.class).obtenerFacturasPorId(facturas.getIdFactura())).withSelfRel());
 	            return ResponseEntity.ok(response);
 	            
 	    }

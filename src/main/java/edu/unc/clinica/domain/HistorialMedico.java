@@ -8,6 +8,7 @@ package edu.unc.clinica.domain;
 
 import java.util.Date;
 
+import org.springframework.hateoas.RepresentationModel;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class HistorialMedico {
+public class HistorialMedico extends RepresentationModel<HistorialMedico>{
 	
 	/** The id historial medico. */
 	@Id
