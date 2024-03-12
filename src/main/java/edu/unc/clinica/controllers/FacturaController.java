@@ -5,6 +5,8 @@
  */
 package edu.unc.clinica.controllers;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +27,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import edu.unc.clinica.dto.PacienteResponseDTO;
+import edu.unc.clinica.dto.FacturaResponseDTO;
 import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.dto.FacturaDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
+import edu.unc.clinica.repositories.FacturaRepository;
 import edu.unc.clinica.services.FacturaService;
 import edu.unc.clinica.util.ApiResponse;
 
@@ -48,25 +52,54 @@ public class FacturaController {
 	/** El modelMapper. */
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private FacturaRepository facturaRepository;
 
+	@GetMapping
+	public ResponseEntity<List<FacturaResponseDTO>> getFactura() {
+	    List<Factura> facturas = facturaRepository.findAll();
+
+	    List<FacturaResponseDTO> facturasResponse = facturas.stream()
+	        .map(factura -> {
+	            List<PacienteResponseDTO> citasResponse = factura.getCitas().stream()
+	                .map(cita -> new PacienteResponseDTO(
+	                    cita.getPaciente().getNombres(),
+	                    cita.getPaciente().getApellidos()
+	                ))
+	                .collect(Collectors.toList());
+
+	            return new FacturaResponseDTO(
+	                    factura.getIdFactura(),
+	                    LocalDateTime.ofInstant(factura.getFechaEmision().toInstant(), ZoneId.systemDefault()),
+	                    factura.getDescripServicios(),
+	                    factura.getPagoRealizados(),
+	                    factura.getSaldoPendiente(),
+	                    factura.getCosto(),
+	                    citasResponse
+	                );
+	            })
+	            .collect(Collectors.toList());
+
+	        return new ResponseEntity<>(facturasResponse, HttpStatus.OK);
+	    }
 	/**
 	 * Maneja las solicitudes GET para obtener todas las facturas.
 	 * 
 	 * @return ResponseEntity con una lista de FacturaDTO en caso de éxito o un
 	 *         mensaje de error si no hay facturas.
 	 */
-	@GetMapping
-	public ResponseEntity<?> obtenerTodasFacturas() {
-
-		List<Factura> facturas = facturaS.listarFacturas();
-		if (facturas == null || facturas.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		} else {
-			List<FacturaDTO> facturaDto = facturas.stream().map(factura -> modelMapper.map(factura, FacturaDTO.class))
-					.collect(Collectors.toList());
-			ApiResponse<List<FacturaDTO>> response = new ApiResponse<>(true, "Lista de facturas", facturaDto);
-			return ResponseEntity.ok(response);
-		}
+	@GetMapping("/api/facturas/all")
+	public ResponseEntity<List<FacturaResponseDTO>> getFacturas() {
+	    List<Factura> facturas = facturaS.listarFacturas();
+	    if (facturas == null || facturas.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    } else {
+	        List<FacturaResponseDTO> facturaDto = facturas.stream().map(factura -> modelMapper.map(factura, FacturaResponseDTO.class))
+	                .collect(Collectors.toList());
+	        ApiResponse<List<FacturaResponseDTO>> response = new ApiResponse<>(true, "Lista de facturas", facturaDto);
+	        return ResponseEntity.ok(response.getData());
+	    }
 	}
 
 	/**
