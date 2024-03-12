@@ -1,8 +1,9 @@
 /*
  * @file FacturaController.java;
  * @Autor Henry AV (c)2024
- * @Created 5 mar 2024,0:04:36
+ * @Created 12 mar 2024,1:47:21
  */
+
 package edu.unc.clinica.controllers;
 
 import java.time.LocalDateTime;
@@ -58,6 +59,7 @@ public class FacturaController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/** The factura repository. */
 	@Autowired
 	private FacturaRepository facturaRepository;
 
