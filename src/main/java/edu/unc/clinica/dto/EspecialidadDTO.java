@@ -1,3 +1,8 @@
+/*
+ * @file EspecialidadDTO.java;
+ * @Autor Fernando C.J. (c)2024
+ * @Created 12 mar. 2024,01:58:23
+ */
 
 package edu.unc.clinica.dto;
 
