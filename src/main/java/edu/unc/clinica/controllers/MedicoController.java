@@ -1,8 +1,9 @@
 /*
- * @file MedicoController.java;
- * @Autor YerssonC.D (c)2024
- * @Created 5 mar 2024,0:35:03
- */
+ * @file MedicoController.java
+ * @Autor Yersson.C.D(c)2024
+ * @Created 6 mar 2024, 2:03:54
+ *  
+ */
 package edu.unc.clinica.controllers;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -43,13 +44,19 @@ import edu.unc.clinica.services.MedicoService;
 import edu.unc.clinica.util.ApiResponse;
 import feign.FeignException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MedicoController.
+ */
 @RestController
 @RequestMapping(value = "api/medicos", headers = "Api-Version=1")
 public class MedicoController {
 
+	/** The medico serv. */
 	@Autowired
 	private MedicoService medicoServ;
 
+	/** The model mapper. */
 	@Autowired
 	private ModelMapper modelMapper;
 

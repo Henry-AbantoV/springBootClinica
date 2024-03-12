@@ -1,3 +1,8 @@
+/*
+ * @file EspecialidadServiceImp.java;
+ * @Autor Fernando C.J. (c)2024
+ * @Created 12 mar. 2024,02:03:51
+ */
 
 package edu.unc.clinica.services;
 
@@ -25,9 +30,11 @@ import edu.unc.clinica.repositories.MedicoRepository;
 @Service
 public class EspecialidadServiceImp implements EspecialidadService {
 
+	/** The Esp R. */
 	@Autowired
 	EspecialidadRepository EspR;
 
+	/** The medico R. */
 	@Autowired
 	MedicoRepository medicoR;
 
