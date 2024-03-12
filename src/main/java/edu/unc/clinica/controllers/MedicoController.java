@@ -223,7 +223,6 @@ public class MedicoController {
 		return ResponseEntity.badRequest().body(errores);
 	}
 
-<<<<<<< HEAD
 	
 	
 	
@@ -231,8 +230,7 @@ public class MedicoController {
 	
 	/// Comunicación entre medico y departamento
 
-	@PutMapping("/asigdepa/{idDepa}")
-=======
+
     /**
      * Asigna un departamento a un médico.
      *
@@ -241,7 +239,6 @@ public class MedicoController {
      * @return ResponseEntity con el departamento asignado o un mensaje de error si falla la operación.
      */
 	@PatchMapping("/asigdepa/{idDepa}")
->>>>>>> b3007a384fb9bb329662919cc4f957dfdeb855cd
 	public ResponseEntity<?> asignarDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
 		// Use @RequestBody to bind the request body to the Departamento object
 		Optional<Departamento> o;
@@ -260,12 +257,6 @@ public class MedicoController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-
-<<<<<<< HEAD
-	
-
-	
-=======
 	/**
 	 * Crea un departamento para un médico.
 	 *
@@ -274,7 +265,6 @@ public class MedicoController {
 	 * @return ResponseEntity con el departamento creado o un mensaje de error si
 	 *         falla la operación.
 	 */
->>>>>>> b3007a384fb9bb329662919cc4f957dfdeb855cd
 	@PostMapping("/creardepa/{idDepa}")
 	public ResponseEntity<?> crearDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
 		Optional<Departamento> o;

@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class PacienteResponseDTO {
 	// Add the fields you want to include in the response
-	private String nombres;
+	private String nombres_paciente;
 	private String apellidos;
 	
 	
-	public PacienteResponseDTO(String nombres, String apellidos) {
+	public PacienteResponseDTO(String nombres_paciente, String apellidos) {
 		super();
-		this.nombres = nombres;
+		this.nombres_paciente = nombres_paciente;
 		this.apellidos = apellidos;
 	}
 	

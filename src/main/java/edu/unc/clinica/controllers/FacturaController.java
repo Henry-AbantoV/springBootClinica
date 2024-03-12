@@ -54,78 +54,36 @@ public class FacturaController {
 	@Autowired
 	private FacturaService facturaS;
 
-		/**
-	     * Maneja las solicitudes GET para obtener todas las facturas.
-	     * @return ResponseEntity con una lista de FacturaDTO en caso de éxito o un mensaje de error si no hay facturas.
-	     */
-	    @GetMapping
-	    public ResponseEntity<?> obtenerTodasFacturas() {
-	     
-	            List<Factura> facturas = facturaS.listarFacturas();
-	            if(facturas==null || facturas.isEmpty()) {
-	            	return ResponseEntity.noContent().build();
-	            }
-	            for(Factura factura:facturas) {
-	            	factura.add(linkTo(methodOn(FacturaController.class).obtenerFacturasPorId(factura.getIdFactura())).withSelfRel());
-	                factura.add(linkTo(methodOn(FacturaController.class).obtenerTodasFacturas()).withRel(IanaLinkRelations.COLLECTION));
-	            }
-	            CollectionModel<Factura> modelo = CollectionModel.of(facturas);
-	            modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
-	            return new ResponseEntity<>(facturas, HttpStatus.OK);
-	    }
-
 	/** El modelMapper. */
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private FacturaRepository facturaRepository;
 
-	@GetMapping
-	public ResponseEntity<List<FacturaResponseDTO>> getFactura() {
-	    List<Factura> facturas = facturaRepository.findAll();
-
-	    List<FacturaResponseDTO> facturasResponse = facturas.stream()
-	        .map(factura -> {
-	            List<PacienteResponseDTO> citasResponse = factura.getCitas().stream()
-	                .map(cita -> new PacienteResponseDTO(
-	                    cita.getPaciente().getNombres(),
-	                    cita.getPaciente().getApellidos()
-	                ))
-	                .collect(Collectors.toList());
-
-	            return new FacturaResponseDTO(
-	                    factura.getIdFactura(),
-	                    LocalDateTime.ofInstant(factura.getFechaEmision().toInstant(), ZoneId.systemDefault()),
-	                    factura.getDescripServicios(),
-	                    factura.getPagoRealizados(),
-	                    factura.getSaldoPendiente(),
-	                    factura.getCosto(),
-	                    citasResponse
-	                );
-	            })
-	            .collect(Collectors.toList());
-
-	        return new ResponseEntity<>(facturasResponse, HttpStatus.OK);
-	    }
-	
 	/**
 	 * Maneja las solicitudes GET para obtener todas las facturas.
 	 * 
 	 * @return ResponseEntity con una lista de FacturaDTO en caso de éxito o un
 	 *         mensaje de error si no hay facturas.
 	 */
-	@GetMapping("/api/facturas/all")
-	public ResponseEntity<List<FacturaResponseDTO>> getFacturas() {
-	    List<Factura> facturas = facturaS.listarFacturas();
-	    if (facturas == null || facturas.isEmpty()) {
-	        return ResponseEntity.noContent().build();
-	    } else {
-	        List<FacturaResponseDTO> facturaDto = facturas.stream().map(factura -> modelMapper.map(factura, FacturaResponseDTO.class))
-	                .collect(Collectors.toList());
-	        ApiResponse<List<FacturaResponseDTO>> response = new ApiResponse<>(true, "Lista de facturas", facturaDto);
-	        return ResponseEntity.ok(response.getData());
-	    }
+
+	@GetMapping
+	public ResponseEntity<List<FacturaResponseDTO>> getFactura() {
+		List<Factura> facturas = facturaRepository.findAll();
+
+		List<FacturaResponseDTO> facturasResponse = facturas.stream().map(factura -> {
+			List<PacienteResponseDTO> citasResponse = factura.getCitas().stream().map(
+					cita -> new PacienteResponseDTO(cita.getPaciente().getNombres(), cita.getPaciente().getApellidos()))
+					.collect(Collectors.toList());
+
+			return new FacturaResponseDTO(factura.getIdFactura(),
+					LocalDateTime.ofInstant(factura.getFechaEmision().toInstant(), ZoneId.systemDefault()),
+					factura.getDescripServicios(), factura.getPagoRealizados(), factura.getSaldoPendiente(),
+					factura.getCosto(), citasResponse);
+		}).collect(Collectors.toList());
+
+		return new ResponseEntity<>(facturasResponse, HttpStatus.OK);
 	}
 
 	/**
@@ -149,9 +107,8 @@ public class FacturaController {
 	}
 
 	/**
-=======
->>>>>>> 2a01e206b875989fb282018fea26be5e4cc2bcfe
-	 * Maneja las solicitudes POST para guardar una nueva factura.
+	 * ======= >>>>>>> 2a01e206b875989fb282018fea26be5e4cc2bcfe Maneja las
+	 * solicitudes POST para guardar una nueva factura.
 	 *
 	 * @param facturaDto La factura a guardar.
 	 * @param result     the result
@@ -232,6 +189,5 @@ public class FacturaController {
 		});
 		return ResponseEntity.badRequest().body(errores);
 	}
-
 
 }
