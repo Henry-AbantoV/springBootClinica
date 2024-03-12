@@ -5,6 +5,9 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.domain.HistorialMedico;
 import edu.unc.clinica.dto.HistorialDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
@@ -36,65 +42,72 @@ import edu.unc.clinica.util.ApiResponse;
 
 // TODO: Auto-generated Javadoc
 /**
- * Controlador REST que maneja las operaciones relacionadas con los historiales médicos.
+ * Controlador REST que maneja las operaciones relacionadas con los historiales
+ * médicos.
  */
 @RestController
 @RequestMapping(value = "api/historial", headers = "Api-Version=1")
 public class HistorialMedicoController {
-	
-    /** The historial S. */
-    // Inyección de dependencias de los servicios necesarios
+
+	/** The historial S. */
+	// Inyección de dependencias de los servicios necesarios
 	@Autowired
 	private HistorialService historialS;
-	
+
 	/** The model mapper. */
 	@Autowired
 	private ModelMapper modelMapper;
 
-	  /**
-     * Método para obtener todos los historiales médicos.
-     *
-     * @return ResponseEntity con la lista de historiales médicos o sin contenido si no hay historiales.
-     */
+	/**
+	 * Método para obtener todos los historiales médicos.
+	 *
+	 * @return ResponseEntity con la lista de historiales médicos o sin contenido si
+	 *         no hay historiales.
+	 */
 	@GetMapping
 	public ResponseEntity<?> obtenerTodosHistoriales() {
 
 		List<HistorialMedico> historial = historialS.listarHistorial();
 		if (historial == null || historial.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
-			List<HistorialDTO> historialDto = historial.stream()
-					.map(historiales -> modelMapper.map(historiales, HistorialDTO.class)).collect(Collectors.toList());
-			ApiResponse<List<HistorialDTO>> response = new ApiResponse<>(true, "Lista de historiales", historialDto);
-			return ResponseEntity.ok(response);
-		}
+		} 
+		for(HistorialMedico historiales:historial) {
+        	historiales.add(linkTo(methodOn(HistorialMedicoController.class).obtenerHistorialesPorId(historiales.getIdHistorialMedico())).withSelfRel());
+            historiales.add(linkTo(methodOn(HistorialMedicoController.class).obtenerTodosHistoriales()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<HistorialMedico> modelo = CollectionModel.of(historial);
+        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+        return new ResponseEntity<>(historial, HttpStatus.OK);
 	}
 
 	/**
-     * Método para obtener un historial médico por su ID.
-     *
-     * @param id ID del historial médico.
-     * @return ResponseEntity con el historial médico correspondiente al ID proporcionado.
-     * @throws EntityNotFoundException Si no se encuentra el historial médico con el ID especificado.
-     */
+	 * Método para obtener un historial médico por su ID.
+	 *
+	 * @param id ID del historial médico.
+	 * @return ResponseEntity con el historial médico correspondiente al ID
+	 *         proporcionado.
+	 * @throws EntityNotFoundException Si no se encuentra el historial médico con el
+	 *                                 ID especificado.
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<?> obtenerHistorialesPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		HistorialMedico historial = historialS.buscarPorIdHistorial(id);
-
 		HistorialDTO historialDto = modelMapper.map(historial, HistorialDTO.class);
 		ApiResponse<HistorialDTO> response = new ApiResponse<>(true, "Lista de Historiales", historialDto);
+		historial.add(linkTo(methodOn(HistorialMedicoController.class).obtenerHistorialesPorId(historial.getIdHistorialMedico())).withSelfRel());
 		return ResponseEntity.ok(response);
 	}
 
-	 /**
-     * Método para guardar un nuevo historial médico.
-     *
-     * @param historialDto Objeto DTO del historial médico a guardar.
-     * @param result       Resultado de la validación de datos.
-     * @return ResponseEntity con el historial médico guardado.
-     * @throws IllegalOperationException Si se produce una operación ilegal al intentar guardar el historial médico.
-     */
+	/**
+	 * Método para guardar un nuevo historial médico.
+	 *
+	 * @param historialDto Objeto DTO del historial médico a guardar.
+	 * @param result       Resultado de la validación de datos.
+	 * @return ResponseEntity con el historial médico guardado.
+	 * @throws IllegalOperationException Si se produce una operación ilegal al
+	 *                                   intentar guardar el historial médico.
+	 */
 	@PostMapping
 	public ResponseEntity<?> guardarHistorial(@Valid @RequestBody HistorialDTO historialDto, BindingResult result)
 			throws IllegalOperationException {
@@ -112,16 +125,18 @@ public class HistorialMedicoController {
 
 	}
 
-
-	 /**
-     * Método para actualizar un historial médico existente.
-     *
-     * @param id           ID del historial médico a actualizar.
-     * @param historialDto Objeto DTO con los datos actualizados del historial médico.
-     * @return ResponseEntity con el historial médico actualizado.
-     * @throws EntityNotFoundException    Si no se encuentra el historial médico con el ID especificado.
-     * @throws IllegalOperationException Si se produce una operación ilegal al intentar actualizar el historial médico.
-     */
+	/**
+	 * Método para actualizar un historial médico existente.
+	 *
+	 * @param id           ID del historial médico a actualizar.
+	 * @param historialDto Objeto DTO con los datos actualizados del historial
+	 *                     médico.
+	 * @return ResponseEntity con el historial médico actualizado.
+	 * @throws EntityNotFoundException   Si no se encuentra el historial médico con
+	 *                                   el ID especificado.
+	 * @throws IllegalOperationException Si se produce una operación ilegal al
+	 *                                   intentar actualizar el historial médico.
+	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<HistorialDTO>> actualizarHistorial(@PathVariable Long id,
 			@RequestBody HistorialDTO historialDto) throws EntityNotFoundException, IllegalOperationException {
@@ -135,13 +150,16 @@ public class HistorialMedicoController {
 	}
 
 	/**
-     * Método para eliminar un historial médico por su ID.
-     *
-     * @param id ID del historial médico a eliminar.
-     * @return ResponseEntity con un mensaje indicando el éxito de la operación de eliminación.
-     * @throws EntityNotFoundException    Si no se encuentra el historial médico con el ID especificado.
-     * @throws IllegalOperationException Si se produce una operación ilegal al intentar eliminar el historial médico.
-     */
+	 * Método para eliminar un historial médico por su ID.
+	 *
+	 * @param id ID del historial médico a eliminar.
+	 * @return ResponseEntity con un mensaje indicando el éxito de la operación de
+	 *         eliminación.
+	 * @throws EntityNotFoundException   Si no se encuentra el historial médico con
+	 *                                   el ID especificado.
+	 * @throws IllegalOperationException Si se produce una operación ilegal al
+	 *                                   intentar eliminar el historial médico.
+	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminarHistorial(@PathVariable Long id)
 			throws EntityNotFoundException, IllegalOperationException {
@@ -149,17 +167,19 @@ public class HistorialMedicoController {
 		ApiResponse<?> response = new ApiResponse<>(true, "Historial médico eliminado con exito", null);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
+
 	/**
-     * Método para asignar un historial médico a un paciente.
-     *
-     * @param idHistorial ID del historial médico a asignar.
-     * @param idPaciente  ID del paciente al que se asignará el historial médico.
-     * @return ResponseEntity con el historial médico asignado al paciente.
-     * @throws EntityNotFoundException    Si no se encuentra el historial médico o el paciente con los IDs especificados.
-     * @throws IllegalOperationException Si se produce una operación ilegal al intentar asignar el historial médico al paciente.
-     */
-	
+	 * Método para asignar un historial médico a un paciente.
+	 *
+	 * @param idHistorial ID del historial médico a asignar.
+	 * @param idPaciente  ID del paciente al que se asignará el historial médico.
+	 * @return ResponseEntity con el historial médico asignado al paciente.
+	 * @throws EntityNotFoundException   Si no se encuentra el historial médico o el
+	 *                                   paciente con los IDs especificados.
+	 * @throws IllegalOperationException Si se produce una operación ilegal al
+	 *                                   intentar asignar el historial médico al
+	 *                                   paciente.
+	 */
 	@PatchMapping("/{idHistorial}/asignarPaciente/{idPaciente}")
 	public ResponseEntity<?> asignarPaciente(@PathVariable Long idHistorial, @PathVariable Long idPaciente)
 			throws EntityNotFoundException, IllegalOperationException {
@@ -167,13 +187,13 @@ public class HistorialMedicoController {
 		return ResponseEntity.ok(historial);
 
 	}
-	
+
 	/**
-     * Método para manejar errores de validación.
-     *
-     * @param result Resultado de la validación de datos.
-     * @return ResponseEntity con los errores de validación.
-     */
+	 * Método para manejar errores de validación.
+	 *
+	 * @param result Resultado de la validación de datos.
+	 * @return ResponseEntity con los errores de validación.
+	 */
 	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 		Map<String, String> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {

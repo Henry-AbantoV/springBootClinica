@@ -11,13 +11,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PastOrPresent;
 
-import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import edu.unc.clinica.domain.Cita;
 import edu.unc.clinica.domain.Factura;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,30 +28,27 @@ import lombok.Data;
 
 //Declaración de la clase CitaDTO
 @Data
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idCita")
 public class CitaDTO {
-	 
- 	// Campo para almacenar el identificador único de la cita
-	 @Id
-	 @GeneratedValue(strategy = GenerationType.IDENTITY)  
+
+	// Campo para almacenar el identificador único de la cita
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idCita;
-	
+
 	// Campo para almacenar la fecha y hora de la cita
 	@Temporal(TemporalType.DATE)
-    @PastOrPresent(message = "La fecha debe ser anterior al dia de hoy")
-    @Past(message = "La fecha de inscripción debe ser en el pasado")
-    private Date fechaHoraCita;
-    
-    // Campo para almacenar el motivo o razón de la cita
+	@PastOrPresent(message = "La fecha debe ser anterior al dia de hoy")
+	@Past(message = "La fecha de inscripción debe ser en el pasado")
+	private Date fechaHoraCita;
+
+	// Campo para almacenar el motivo o razón de la cita
 	@NotBlank(message = "El motivo no puede estar vacío.")
-    private String motivoCita;
-    
-    // Campo para almacenar el estado actual de la cita
+	private String motivoCita;
+
+	// Campo para almacenar el estado actual de la cita
 	@NotBlank(message = "El estado de la cita no puede estar vacío.")
-    private String estadoCita;
-    
-    // Campo para almacenar la factura asociada a la cita
+	private String estadoCita;
+
+	// Campo para almacenar la factura asociada a la cita
 	private Factura factura;
 }

@@ -5,17 +5,22 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -60,12 +65,14 @@ public class MedicoController {
 
 		if (medicos == null || medicos.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
-			List<MedicoDTO> medicoDTO = medicos.stream().map(medico -> modelMapper.map(medico, MedicoDTO.class))
-					.collect(Collectors.toList());
-			ApiResponse<List<MedicoDTO>> response = new ApiResponse<>(true, "Lista de medicos", medicoDTO);
-			return ResponseEntity.ok(response);
-		}
+		}  
+		for(Medico medico:medicos) {
+        	medico.add(linkTo(methodOn(MedicoController.class).ObtenerMedicosPorId(medico.getIdMedico())).withSelfRel());
+            medico.add(linkTo(methodOn(MedicoController.class).obtenerMedicos()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<Medico> modelo = CollectionModel.of(medicos);
+        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+        return new ResponseEntity<>(medicos, HttpStatus.OK);
 	}
 
 	/**
@@ -79,9 +86,9 @@ public class MedicoController {
 	public ResponseEntity<?> ObtenerMedicosPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		Medico medico = medicoServ.buscarMedicoById(id);
-
 		MedicoDTO medicoDTO = modelMapper.map(medico, MedicoDTO.class);
 		ApiResponse<MedicoDTO> response = new ApiResponse<>(true, "Lista de medicos", medicoDTO);
+		medico.add(linkTo(methodOn(MedicoController.class).ObtenerMedicosPorId(medico.getIdMedico())).withSelfRel());
 		return ResponseEntity.ok(response);
 
 	}
@@ -216,6 +223,7 @@ public class MedicoController {
 		return ResponseEntity.badRequest().body(errores);
 	}
 
+<<<<<<< HEAD
 	
 	
 	
@@ -224,44 +232,72 @@ public class MedicoController {
 	/// Comunicación entre medico y departamento
 
 	@PutMapping("/asigdepa/{idDepa}")
+=======
+    /**
+     * Asigna un departamento a un médico.
+     *
+     * @param depa    El departamento a asignar.
+     * @param idDepa  El ID del departamento.
+     * @return ResponseEntity con el departamento asignado o un mensaje de error si falla la operación.
+     */
+	@PatchMapping("/asigdepa/{idDepa}")
+>>>>>>> b3007a384fb9bb329662919cc4f957dfdeb855cd
 	public ResponseEntity<?> asignarDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
-	    // Use @RequestBody to bind the request body to the Departamento object
-	    Optional<Departamento> o;
-	    try {
-	        o = medicoServ.asignarDepartamento(depa, idDepa);
-	    } catch (FeignException e) {
-	        if (e.status() == 404) {
-	            // Adjust the status code and error message according to your requirements
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-	                    "No se pudo asignar el departamento al medico o error en la comunicacion: " + e.getMessage()));
-	        }
-	        throw e; // Rethrow the exception for other status codes
-	    }
-	    if (o.isPresent()) {
-	        return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
-	    }
-	    return ResponseEntity.notFound().build();
+		// Use @RequestBody to bind the request body to the Departamento object
+		Optional<Departamento> o;
+		try {
+			o = medicoServ.asignarDepartamento(depa, idDepa);
+		} catch (FeignException e) {
+			if (e.status() == 404) {
+				// Adjust the status code and error message according to your requirements
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
+						"No se pudo asignar el departamento al medico o error en la comunicacion: " + e.getMessage()));
+			}
+			throw e; // Rethrow the exception for other status codes
+		}
+		if (o.isPresent()) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
+<<<<<<< HEAD
 	
 
 	
+=======
+	/**
+	 * Crea un departamento para un médico.
+	 *
+	 * @param depa   El departamento a crear.
+	 * @param idDepa El ID del departamento.
+	 * @return ResponseEntity con el departamento creado o un mensaje de error si
+	 *         falla la operación.
+	 */
+>>>>>>> b3007a384fb9bb329662919cc4f957dfdeb855cd
 	@PostMapping("/creardepa/{idDepa}")
 	public ResponseEntity<?> crearDepartamento(@RequestBody Departamento depa, @PathVariable Long idDepa) {
-	    Optional<Departamento> o;
-	    try {
-	        o = medicoServ.crearDepartamento(depa, idDepa);
-	    } catch (FeignException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-	                "No se pudo crear el departamento o error en la comunicacion: " + e.getMessage()));
-	    }
-	    if (o.isPresent()) {
-	        return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
-	    }
-	    return ResponseEntity.notFound().build();
+		Optional<Departamento> o;
+		try {
+			o = medicoServ.crearDepartamento(depa, idDepa);
+		} catch (FeignException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
+					"No se pudo crear el departamento o error en la comunicacion: " + e.getMessage()));
+		}
+		if (o.isPresent()) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
-
+	/**
+	 * Elimina un departamento para un médico.
+	 *
+	 * @param depa   El departamento a eliminar.
+	 * @param idDepa El ID del departamento.
+	 * @return ResponseEntity con el departamento eliminado o un mensaje de error si
+	 *         falla la operación.
+	 */
 	@DeleteMapping("/eliminardepa/{idDepa}")
 	public ResponseEntity<?> eliminarDepartamento(Departamento depa, @PathVariable Long idDepa) {
 		Optional<Departamento> o;
@@ -269,7 +305,7 @@ public class MedicoController {
 			o = medicoServ.eliminarDepartamento(depa, idDepa);
 		} catch (FeignException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje",
-					"No existe el departamento por id" + idDepa+"o error en la comunicacion: " + e.getMessage()));
+					"No existe el departamento por id" + idDepa + "o error en la comunicacion: " + e.getMessage()));
 		}
 		if (o.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(o.get());
@@ -277,6 +313,13 @@ public class MedicoController {
 		return ResponseEntity.notFound().build();
 	}
 
+	/**
+	 * Elimina la asignación de un médico a un departamento.
+	 *
+	 * @param id El ID del médico a desvincular del departamento.
+	 * @return ResponseEntity con un mensaje de éxito si la operación se realiza
+	 *         correctamente o un mensaje de error si falla.
+	 */
 	@DeleteMapping("/eliminar-medico-depa/{id}")
 	public ResponseEntity<?> eliminarMedicoDepa(@PathVariable Long id) {
 		medicoServ.eliminarMedicoDepa(id);

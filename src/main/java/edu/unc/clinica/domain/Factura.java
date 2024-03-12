@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Factura {
+public class Factura extends RepresentationModel<Factura>{
 
 	// Identificador único de la factura.
 	@Id

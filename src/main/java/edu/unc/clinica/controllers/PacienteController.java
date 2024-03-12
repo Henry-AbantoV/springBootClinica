@@ -61,8 +61,7 @@ public class PacienteController {
 
 	@Autowired
 	private PacienteRepository pacienteR;
-	
-	
+
 	@Autowired
 	private CitaService citaS;
 	/** The model mapper. */
@@ -114,17 +113,18 @@ public class PacienteController {
 		Paciente pacientes = pacienteS.buscarPacienteById(idPaciente);
 		if (pacientes == null) {
 
-            throw new EntityNotFoundException("Paciente no encontrado con el ID: " + idPaciente);
-        }
+			throw new EntityNotFoundException("Paciente no encontrado con el ID: " + idPaciente);
+		}
 
-        PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
+		PacienteDTO pacienteDto = modelMapper.map(pacientes, PacienteDTO.class);
 
-        // Crear enlace HATEOAS para el recurso
-        pacientes.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(pacientes.getIdPaciente())).withSelfRel());
-        
-        return new ResponseEntity<>(pacientes, HttpStatus.OK);
-    }
-		
+		// Crear enlace HATEOAS para el recurso
+		pacientes.add(linkTo(methodOn(PacienteController.class).obtenerPacientesPorId(pacientes.getIdPaciente()))
+				.withSelfRel());
+
+		return new ResponseEntity<>(pacientes, HttpStatus.OK);
+	}
+
 	/**
 	 * Endpoint para guardar un nuevo paciente.
 	 * 
@@ -159,18 +159,16 @@ public class PacienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	 
-	  /**
-     * Endpoint para actualizar la información de un paciente existente.
-     * 
-     * @param id Identificador del paciente a actualizar.
-     * @param pacienteDto DTO con la información actualizada del paciente.
-     * @return ResponseEntity con la información del paciente actualizado.
-     * @throws EntityNotFoundException Si el paciente no se encuentra.
-     * @throws IllegalOperationException Si la operación no cumple con las reglas de negocio.
-     */
-
-
+	/**
+	 * Endpoint para actualizar la información de un paciente existente.
+	 * 
+	 * @param id          Identificador del paciente a actualizar.
+	 * @param pacienteDto DTO con la información actualizada del paciente.
+	 * @return ResponseEntity con la información del paciente actualizado.
+	 * @throws EntityNotFoundException   Si el paciente no se encuentra.
+	 * @throws IllegalOperationException Si la operación no cumple con las reglas de
+	 *                                   negocio.
+	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<PacienteDTO>> actualizarPaciente(@PathVariable Long id,
 			@RequestBody PacienteDTO pacienteDto) throws EntityNotFoundException, IllegalOperationException {
@@ -254,7 +252,16 @@ public class PacienteController {
 		return ResponseEntity.badRequest().body(errores);
 	}
 
-	
+	/**
+	 * Maneja las solicitudes GET para obtener todas las citas de un paciente por su
+	 * ID.
+	 *
+	 * @param idPaciente El ID del paciente para el cual se obtienen las citas.
+	 * @return ResponseEntity con la lista de CitaDTO correspondiente al paciente o
+	 *         un mensaje de error si no se encuentran citas.
+	 * @throws EntityNotFoundException Si el paciente no se encuentra en la base de
+	 *                                 datos.
+	 */
 	@GetMapping("/{idPaciente}/citas")
 	public ResponseEntity<?> obtenerCitas(@PathVariable Long idPaciente) throws EntityNotFoundException {
 		List<Cita> citas = pacienteS.obtenerCitas(idPaciente);
@@ -285,9 +292,15 @@ public class PacienteController {
 	}
 
 	/**
-	 * Obtiene una factura específica de una cita de un paciente.
+	 * Obtiene las facturas asociadas a una cita específica de un paciente.
+	 *
+	 * @param idPaciente El ID del paciente.
+	 * @param idCita     El ID de la cita.
+	 * @return ResponseEntity con una lista de FacturaDTO en caso de éxito o un
+	 *         mensaje de error.
+	 * @throws EntityNotFoundException   Si no se encuentra el paciente o la cita.
+	 * @throws IllegalOperationException Si ocurre una operación ilegal.
 	 */
-
 	@GetMapping("/{idPaciente}/citas/{idCita}/facturas")
 	public ResponseEntity<?> obtenerFacturas(@PathVariable Long idPaciente, @PathVariable Long idCita)
 			throws EntityNotFoundException, IllegalOperationException {
@@ -296,6 +309,5 @@ public class PacienteController {
 				.collect(Collectors.toList());
 		ApiResponse<List<FacturaDTO>> response = new ApiResponse<>(true, "Facturas obtenidas con éxito", facturasDTO);
 		return ResponseEntity.ok(response);
-
 	}
 }
