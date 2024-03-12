@@ -5,6 +5,9 @@
  */
 package edu.unc.clinica.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unc.clinica.domain.Factura;
 import edu.unc.clinica.domain.HistorialMedico;
 import edu.unc.clinica.dto.HistorialDTO;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
@@ -64,12 +70,14 @@ public class HistorialMedicoController {
 		List<HistorialMedico> historial = historialS.listarHistorial();
 		if (historial == null || historial.isEmpty()) {
 			return ResponseEntity.noContent().build();
-		} else {
-			List<HistorialDTO> historialDto = historial.stream()
-					.map(historiales -> modelMapper.map(historiales, HistorialDTO.class)).collect(Collectors.toList());
-			ApiResponse<List<HistorialDTO>> response = new ApiResponse<>(true, "Lista de historiales", historialDto);
-			return ResponseEntity.ok(response);
-		}
+		} 
+		for(HistorialMedico historiales:historial) {
+        	historiales.add(linkTo(methodOn(HistorialMedicoController.class).obtenerHistorialesPorId(historiales.getIdHistorialMedico())).withSelfRel());
+            historiales.add(linkTo(methodOn(HistorialMedicoController.class).obtenerTodosHistoriales()).withRel(IanaLinkRelations.COLLECTION));
+        }
+        CollectionModel<HistorialMedico> modelo = CollectionModel.of(historial);
+        modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+        return new ResponseEntity<>(historial, HttpStatus.OK);
 	}
 
 	/**
@@ -85,9 +93,9 @@ public class HistorialMedicoController {
 	public ResponseEntity<?> obtenerHistorialesPorId(@PathVariable Long id) throws EntityNotFoundException {
 
 		HistorialMedico historial = historialS.buscarPorIdHistorial(id);
-
 		HistorialDTO historialDto = modelMapper.map(historial, HistorialDTO.class);
 		ApiResponse<HistorialDTO> response = new ApiResponse<>(true, "Lista de Historiales", historialDto);
+		historial.add(linkTo(methodOn(HistorialMedicoController.class).obtenerHistorialesPorId(historial.getIdHistorialMedico())).withSelfRel());
 		return ResponseEntity.ok(response);
 	}
 

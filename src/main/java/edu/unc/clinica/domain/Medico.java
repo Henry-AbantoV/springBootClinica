@@ -7,6 +7,8 @@ package edu.unc.clinica.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 
 import edu.unc.clinica.domainModels.Departamento;
@@ -29,7 +31,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class Medico {
+public class Medico extends RepresentationModel<Medico>{
 	
 	// Identificador único del médico.
 	@Id

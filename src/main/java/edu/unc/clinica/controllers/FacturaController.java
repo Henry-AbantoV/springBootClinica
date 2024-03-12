@@ -7,6 +7,9 @@ package edu.unc.clinica.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -48,6 +53,26 @@ public class FacturaController {
 	/** The factura S. */
 	@Autowired
 	private FacturaService facturaS;
+
+		/**
+	     * Maneja las solicitudes GET para obtener todas las facturas.
+	     * @return ResponseEntity con una lista de FacturaDTO en caso de éxito o un mensaje de error si no hay facturas.
+	     */
+	    @GetMapping
+	    public ResponseEntity<?> obtenerTodasFacturas() {
+	     
+	            List<Factura> facturas = facturaS.listarFacturas();
+	            if(facturas==null || facturas.isEmpty()) {
+	            	return ResponseEntity.noContent().build();
+	            }
+	            for(Factura factura:facturas) {
+	            	factura.add(linkTo(methodOn(FacturaController.class).obtenerFacturasPorId(factura.getIdFactura())).withSelfRel());
+	                factura.add(linkTo(methodOn(FacturaController.class).obtenerTodasFacturas()).withRel(IanaLinkRelations.COLLECTION));
+	            }
+	            CollectionModel<Factura> modelo = CollectionModel.of(facturas);
+	            modelo.add(linkTo(methodOn(EspecialidadController.class).obtenerTodasEspecialidades()).withSelfRel());
+	            return new ResponseEntity<>(facturas, HttpStatus.OK);
+	    }
 
 	/** El modelMapper. */
 	@Autowired
@@ -83,6 +108,7 @@ public class FacturaController {
 
 	        return new ResponseEntity<>(facturasResponse, HttpStatus.OK);
 	    }
+	
 	/**
 	 * Maneja las solicitudes GET para obtener todas las facturas.
 	 * 
@@ -123,6 +149,8 @@ public class FacturaController {
 	}
 
 	/**
+=======
+>>>>>>> 2a01e206b875989fb282018fea26be5e4cc2bcfe
 	 * Maneja las solicitudes POST para guardar una nueva factura.
 	 *
 	 * @param facturaDto La factura a guardar.
@@ -204,5 +232,6 @@ public class FacturaController {
 		});
 		return ResponseEntity.badRequest().body(errores);
 	}
+
 
 }
