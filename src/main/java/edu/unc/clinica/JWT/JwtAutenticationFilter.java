@@ -1,3 +1,8 @@
+/*
+ * @file JwtAutenticationFilter.java;
+ * @Autor Henry AV (c)2024
+ * @Created 12 mar 2024,2:05:24
+ */
 package edu.unc.clinica.JWT;
 
 import java.io.IOException;
@@ -18,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+// TODO: Auto-generated Javadoc
 /**
  * Este filtro de autenticación JWT verifica la validez del token JWT en las solicitudes entrantes.
  * Si el token es válido, establece la autenticación del usuario en el contexto de seguridad.
