@@ -1,3 +1,9 @@
+/*
+ * @file MedicoService.java
+ * @Autor Yersson.C.D(c)2024
+ * @Created 5 mar 2024, 2:02:06
+ *  
+ */
 package edu.unc.clinica.services;
 
 import java.util.List;
@@ -8,6 +14,7 @@ import edu.unc.clinica.domainModels.Departamento;
 import edu.unc.clinica.exceptions.EntityNotFoundException;
 import edu.unc.clinica.exceptions.IllegalOperationException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Esta interfaz define los métodos que debe implementar un servicio para
  * gestionar la entidad Medico.
@@ -56,8 +63,8 @@ public interface MedicoService {
 
 	/**
 	 * Elimina un médico de la base de datos.
-	 * 
-	 * @param idMedico El ID del médico a eliminar.
+	 *
+	 * @param IdMedico the id medico
 	 * @throws EntityNotFoundException   Si no se encuentra ningún médico con el ID
 	 *                                   especificado.
 	 * @throws IllegalOperationException Si ocurre una operación ilegal durante la
@@ -80,9 +87,9 @@ public interface MedicoService {
 
 	/**
 	 * Asigna un jefe a un médico.
-	 * 
+	 *
 	 * @param idMedico  El ID del médico al que se asignará el jefe.
-	 * @param idMedJefe El ID del médico que se asignará como jefe.
+	 * @param IdMedJefe the id med jefe
 	 * @return El médico con el jefe asignado.
 	 * @throws EntityNotFoundException   Si no se encuentra ningún médico o jefe con
 	 *                                   los IDs especificados.
@@ -92,13 +99,39 @@ public interface MedicoService {
 
 	Medico asignarJefe(Long idMedico, Long IdMedJefe) throws EntityNotFoundException, IllegalOperationException;
 
+	/**
+	 * Eliminar medico depa.
+	 *
+	 * @param id the id
+	 */
 	// Comunicacion entre microservicios
 	void eliminarMedicoDepa(Long id);
 
+	/**
+	 * Asignar departamento.
+	 *
+	 * @param depa the depa
+	 * @param idDepa the id depa
+	 * @return the optional
+	 */
 	Optional<Departamento> asignarDepartamento(Departamento depa, Long idDepa);
 
+	/**
+	 * Crear departamento.
+	 *
+	 * @param depa the depa
+	 * @param idDepa the id depa
+	 * @return the optional
+	 */
 	Optional<Departamento> crearDepartamento(Departamento depa, Long idDepa);
 
+	/**
+	 * Eliminar departamento.
+	 *
+	 * @param depa the depa
+	 * @param iddepa the iddepa
+	 * @return the optional
+	 */
 	Optional<Departamento> eliminarDepartamento(Departamento depa, Long iddepa);
 
 }

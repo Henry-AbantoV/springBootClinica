@@ -1,8 +1,9 @@
 /*
- * @file MedicoServiceImp.java;
- * @Autor YerssonC.D (c)2024
- * @Created 5 mar 2024,0:32:42
- */
+ * @file MedicoServiceImp.java
+ * @Autor Yersson.C.D(c)2024
+ * @Created 5 mar 2024, 2:01:57
+ *  
+ */
 package edu.unc.clinica.services;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import edu.unc.clinica.repositories.MedicoRepository;
 import edu.unc.clinica.repositories.PacienteRepository;
 import jakarta.persistence.PersistenceException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Implementación de {@link MedicoService} que proporciona métodos para
  * gestionar la entidad Medico.
@@ -32,12 +34,15 @@ import jakarta.persistence.PersistenceException;
 @Service
 public class MedicoServiceImp implements MedicoService {
 
+	/** The medico rep. */
 	@Autowired
 	private MedicoRepository medicoRep;
 
+	/** The paciente rep. */
 	@Autowired
 	private PacienteRepository pacienteRep;
 
+	/** The depa client. */
 	@Autowired
 	private DepaClientRest depaClient;
 
@@ -194,6 +199,13 @@ public class MedicoServiceImp implements MedicoService {
 	}
 
 	///////////////////////// implementacion de los metodos en la comunicacion de
+	/**
+	 * Asignar departamento.
+	 *
+	 * @param depa the depa
+	 * @param idDepa the id depa
+	 * @return the optional
+	 */
 	///////////////////////// microservicios
 	@Override
 	@Transactional
@@ -214,11 +226,23 @@ public class MedicoServiceImp implements MedicoService {
 		return Optional.empty();
 	}
 
+	/**
+	 * Eliminar medico depa.
+	 *
+	 * @param id the id
+	 */
 	@Override
 	public void eliminarMedicoDepa(Long id) {
 		medicoRep.eliminarMedicoDepaPorId(id);
 	}
 
+	/**
+	 * Crear departamento.
+	 *
+	 * @param depa the depa
+	 * @param idDepa the id depa
+	 * @return the optional
+	 */
 	@Override
 	@Transactional
 	public Optional<Departamento> crearDepartamento(Departamento depa, Long idDepa) {
@@ -238,6 +262,13 @@ public class MedicoServiceImp implements MedicoService {
 		return Optional.empty();
 	}
 
+	/**
+	 * Eliminar departamento.
+	 *
+	 * @param depa the depa
+	 * @param idDepa the id depa
+	 * @return the optional
+	 */
 	@Override
 	@Transactional
 	public Optional<Departamento> eliminarDepartamento(Departamento depa, Long idDepa) {
